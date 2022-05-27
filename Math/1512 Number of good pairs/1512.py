@@ -5,12 +5,17 @@ class Solution(object):
         :rtype: int
         """
         # A pair (i, j) is called good if nums[i] == nums[j] and i < j.
-        
+        outList=list();
         # first for loop : i
         for i in range(len(nums)-1):
             # second for loop : j
             for j in range(i+1,len(nums)):
-                print(i,j)
-        return "finish"
+                # now we already fulfil the condition i<j
+                # let's check if nums[i] == nums[j] 
+                if nums[i] == nums[j]:
+                    # add the pair i,j into a list as tuple
+                    outList.append((i,j))
+        print(outList)
+        return len(outList)
 sol=Solution()
-sol.numIdenticalPairs([1,2,3,1,1,3])
+sol.numIdenticalPairs([1,1,1,1])
