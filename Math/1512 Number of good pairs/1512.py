@@ -9,7 +9,7 @@ class Solution(object):
         # first for loop : i
         for i in range(len(nums)-1):
             # second for loop : j
-            for j in range(1,len(nums)):
+            for j in range(i+1,len(nums)):
                 print(i,j)
         return "finish"
 sol=Solution()
