@@ -5,8 +5,8 @@ class Solution:
             print(num)
             if num%2==0: # num is even
                 num=num/2
-            if num%2==1: # num is odd
-                num-=1 # this version is not correct. 
+            else: # num is odd
+                num-=1
             count+=1
 
         return count
