@@ -25,4 +25,4 @@ class Solution:
 
 sol=Solution()
 print(sol.minCostToMoveChips([1,1000000]))
-
+# test passed
