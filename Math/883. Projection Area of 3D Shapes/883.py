@@ -5,6 +5,7 @@ class Solution:
         #  | 1  2 |
         #  | 3  4 |
         # the projection in the xy plane is 4, corresponds to the number of element of the matrix
+        # ...if there is no zero
         
         # the projection in the xz plane is 2+4=6, 
         #  |   /^\  |
@@ -19,7 +20,13 @@ class Solution:
         #  | ------ |
 
         # xy plane
-        xy=len(grid)*len(grid[0])
+        xy=0
+        for i in grid:
+            for j in grid:
+                if grid[i][j]!=0:
+                    xy+=1
+                else:
+                    pass
         
         # xz plane
         xz=0
