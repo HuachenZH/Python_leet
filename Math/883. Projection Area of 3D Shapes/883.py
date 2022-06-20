@@ -21,9 +21,9 @@ class Solution:
 
         # xy plane
         xy=0
-        for i in grid:
-            for j in grid:
-                if grid[i][j]!=0:
+        for i in grid: # i is list
+            for j in grid: # j is int
+                if j!=0:
                     xy+=1
                 else:
                     pass
