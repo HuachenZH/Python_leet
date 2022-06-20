@@ -22,7 +22,7 @@ class Solution:
         # xy plane
         xy=0
         for i in grid: # i is list
-            for j in grid: # j is int
+            for j in i: # j is int
                 if j!=0:
                     xy+=1
                 else:
@@ -37,7 +37,7 @@ class Solution:
         yz=sum(grid[len(grid)-1]) # last row
         return xy+xz+yz
 sol=Solution()
-print(sol.projectionArea([[1,0],[0,2]]))
+print(sol.projectionArea([[1,1,1],[1,0,1],[1,1,1]]))
 # [[1,2],[3,4]]
 # [[1,0],[0,2]]
 
