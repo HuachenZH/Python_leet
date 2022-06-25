@@ -36,8 +36,14 @@ class Solution:
             xz+=max(i)
         
         # yz plane. max of each column
-        
-        
+        yz=0
+        for col in range(len(grid)):
+            tmp=[]
+            for rowList in grid:
+                tmp.append(rowList[col])
+            yz+=max(tmp)
+            print(tmp)
+        print(yz)
         return xy+xz+yz
 sol=Solution()
 print(sol.projectionArea([[1,0],[0,2]]))
