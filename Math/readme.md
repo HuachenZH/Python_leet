@@ -6,3 +6,4 @@ Algo that I might reuse in the future:
 - 1979: gdc (greatest commun divisor)
 - 2119: reverse an int
 - 1742: in a dictionary, find the keys containing the highest value
+- 1137: trinonacci number, recursive and iterative solution
