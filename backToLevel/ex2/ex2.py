@@ -65,8 +65,7 @@ def plausibilite(str_subs:str, dict_st:dict) -> float :
     '''
     score=0
     for i in range(len(str_subs)-1):
-        # score += df.loc[str_subs[i:i+2].upper()[0]+'_' , '_'+str_subs[i:i+2].upper()[1]] # corresponding score of the doublet
-        score += dict_st[str_subs[i:i+2].upper()]
+        score += dict_st.get(str_subs[i:i+2].upper())
     return score
 
 
@@ -120,7 +119,7 @@ dictMapping={chr(i):chr(i) for i in range(97, 123)}
 
 #%% HAL 9000
 
-score=plausibilite(str_subs, df)
+score=plausibilite(str_subs, dict_st)
 print('initial score is : '+str(score))
 
 
@@ -146,7 +145,7 @@ while nbrWithoutUpgrade < 6000 :
     
     
     # new score
-    new_score = plausibilite(str_subs, df)
+    new_score = plausibilite(str_subs, dict_st)
     if new_score > score:
         # str_sub is already updated
         score = new_score # upgrade the score
@@ -194,3 +193,5 @@ df_new.sort_values('probability', ascending=False, inplace=True)
 
 
 #%% test
+
+    
