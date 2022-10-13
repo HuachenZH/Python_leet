@@ -10,3 +10,4 @@ Algo that I might reuse in the future:
 - 509 : fibo (recursive solution)
 - 1137: trinonacci number, recursive and iterative solution
 - 1952: is_prime()
+- 70 : fibo (iterative solution)
