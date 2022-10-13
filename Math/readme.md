@@ -7,5 +7,6 @@ Algo that I might reuse in the future:
 - 2119: reverse an int
 - 1742: in a dictionary, find the keys containing the highest value
 - 2180: digitSum. Get the digit sum of a number
+- 509 : fibo
 - 1137: trinonacci number, recursive and iterative solution
 - 1952: is_prime()
