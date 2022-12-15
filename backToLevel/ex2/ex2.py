@@ -19,13 +19,15 @@ def df2dict(df) -> dict :
         Dictionary based on data of the input data frame. The keys of the dictionary will be like "AA", "AB"... "ZY", "ZZ"
     '''
     dict_df={}
-    for index, row in df.iterrows():
+    for index, row in df.iterrows(): # .iterrows: une méthode pour pandas dataframe, pour itérer les lignes
         for index2, value in row.items():
             dict_df[ index[0]+index2[1] ] = value
+            # index est A_, B_, C_ ...
+            # index2 est _A, _B, _C ...
     return dict_df
 
 
-def resizedf(df):
+def resizedf(df): # cette fonction n'est pas utilisée
     '''
     Transform a two-dimension pandas data frame into an one-dimension data frame.
     Parameters
@@ -72,7 +74,6 @@ def plausibilite(str_subs:str, dict_st:dict) -> float :
 def swap(swap1:str, swap2:str, str_subs:str) -> str:
     '''
     Swap two alphabets in a string. For example, all "a" become "b", all "b" become "a"
-
     Parameters
     ----------
     swap1 : str
@@ -81,41 +82,52 @@ def swap(swap1:str, swap2:str, str_subs:str) -> str:
         second alphabet.
     str_subs : str
         The string which will be operated.
-
     Returns
     -------
     str
         Swapped string.
-
     '''
     
     str_subs=str_subs.replace(swap1,"%")
     str_subs=str_subs.replace(swap2,swap1)
     str_subs=str_subs.replace('%', swap2)
     return str_subs
-#%% ********************* df : standard *************************
+#%% ********************* préparer dataframe et dictionnaire *************************
 # q1, creer un dictionnaire ... 
+# dans ma solution j'utilise la librairie Pandas pour traiter le tableaux.
+# Pandas est dédié pour la data science, il est puissant quand il s'agit une grande quantité de donnée
 df = pd.read_csv('bigrammes.txt',  sep="\t", header=0)
-df.set_index('10.5M', inplace=True) # put first column to meta data
+# pd veut dire pandas, j'avais fait import pandas as pd, pd est l'alias que je donne à pandas
+# pour les développeur python, souvent on appelle pandas pd, numpy np, c'est comme une convention
+
+df.set_index('10.5M', inplace=True) 
+# put first column to meta data
+# dans bigrammes.txt, la premiere colonne est A_, B_, C_ ... etc. On le met dans meta data (=nom de colonne)
 
 # log stuffs
+# pour faciliter le calcul du score plus tard, on met le tableau en échelle logarithme
 for c in df.columns:
-    df[c]=df[c]+2 # add one to all elements so that there wont be zero nor one
-    # log 0 does not exist. log 1 is 0
+    df[c]=df[c]+1 # add one to all elements so that there wont be zero, cuz log 0 does not exist. 
     df[c]=np.log10(df[c])
 
-# resize them to 0 ~ 1.
-# if not, value too small,  RuntimeWarning: overflow encountered in double_scalars RuntimeWarning: overflow encountered in double_scalars
-# for c in df.columns:
-#     df[c]=(df[c]-df.min().min())/(df.max().max()-df.min().min())
-del(c)
+
+del(c) # nettoyage, enlever la variable temporaire que je n'ai pas besoin plus tard
 
 dict_st=df2dict(df) # st stands for standard
-# dict2=df2dict(df2)
+# j'ai fait une fonction df2dict, dataframe to dictionary
+# j'ai trouvé qu'avec dataframe de pandas, ça peut marcher mais il prend bcp de temps,
+# donc finalement je dois transformer à dictionnaire
+# apres on va travailler avec ce dictionnaire
 
-
+# le string à décoder :
 str_subs="kinrqievxienirzitywryerygfbfjjehiyjgyrrinlirbftirgfnrseigijyhwtywbifeknwtgyhfntiithynetzigirygeywwglinibqwtebrygethnirseiwlhinjihtwmgirybrlyqnirringyhynfgizilinilwrylfbtnykywgirhinybtsewgliqfbbinywthietitniqirivhgwjytwfbrrengirikibilibtrsewykywibtlynseigybewthnijiqibtiwgbibawtnwibziginipynqywryawpenilihynetaytwpeiiriroievnfepwrbykywibthyritinyanyjxwrhyngirflliwgryhxorwfbflwiivhnwlywtebitnwrtirrihnfafbqiebniigjxypnwbwgyggywtitkibywtryrrioywtitrinigikywthnibywtebgwkniyexyrynqgymybqfbbywtyerrwtftjfbregtywtrirwbrtnelibtrrybrhnibqnirirbftirxymwteiggiritrilmgywtbihfekfwntibwnebwbrtybtibhgyji"
+
 dictMapping={chr(i):chr(i) for i in range(97, 123)}
+# c'est une ligne de code permettant de créer un dictionanire comme ça: {'a':'a', 'b':'b', 'c':'c'.... 'z':'z'}
+# le key est pour plaintext, value est pour ciphertext
+# le contenu de ce dictionnaire va changer au fur et à mesure
+# par ex si je trouve le 'k' de ciphertext correpond à 'v' de plaintext, le dictionnaire sera:
+# {...'v': 'k'.....}
 
 #%% HAL 9000
 
@@ -124,6 +136,9 @@ print('initial score is : '+str(score))
 
 
 dictMappingSpare=dictMapping.copy()
+# faire un copy au cas où j'ai besoin
+# dans python, si je fais dict2 = dict1, puis je change dict1, dict2 va aussi etre changé
+# c'est pour ça jai fait .copy()
 
 
 t = time.time()
@@ -131,18 +146,17 @@ nbrWithoutUpgrade=0
 countIteration=0
 nbrUpgrade=0
 while nbrWithoutUpgrade < 6000 :
+# la condition pour stopper le while:
+# si pour 6000 essaie enchainé, le score n'est pas amélioré, on sort la boucle while
     countIteration+=1
-    # remap stuffs
-    # remap the string with the current mapping dictionary
-    # for key, value in dictMapping.items():
-    #     str_subs = swap(key, value, str_subs)
     
     # swap... new possibility
+    # selon la méthode du prof, on va prendre deux lettre aléatoirement et tester
+    # si le score est mieux, on garde le changement
     swap1=chr(random.randrange(97,123))
     swap2=chr(random.randrange(97,123))
     str_subs_spare = str_subs # make a spare copy
     str_subs=swap(swap1,swap2,str_subs)
-    
     
     # new score
     new_score = plausibilite(str_subs, dict_st)
@@ -162,36 +176,15 @@ while nbrWithoutUpgrade < 6000 :
         nbrWithoutUpgrade+=1
     
 print("end score is "+str(score))
-elapsed = time.time() - t
+elapsed = time.time() - t # calculer ça prend combien de temps pour finir la boucle while
 print("time elapsed: "+str(elapsed))
 print('nbr mise a jour : '+str(nbrUpgrade))
-#%% ******************* df2 : of our string ************************
-# create another data frame with zeros and the same meta data
-
-# df2=df.copy()
-# for col in df2.columns:
-#     df2[col].values[:]=0
-# del(col)
-# # count bigrammes in str_subs
-# for i in range(len(str_subs)-1):
-#     bigramme_actual = str_subs[i:i+2]
-#     df2.iloc[ord(bigramme_actual[0])-97 , ord(bigramme_actual[1])-97]+=1
-# del(i)
-# del(bigramme_actual)
-# # standardize df2
-# df2=df2/df2.to_numpy().sum()
 
 
 
-#%% ********* df two cols ***************
-df_new=resizedf(df)
-# df2_new=resizedf(df2)
 
-df_new.sort_values('probability', ascending=False, inplace=True)
-# df2_new.sort_values('probability', ascending=False, inplace=True)
+
 
 
 
 #%% test
-
-    
