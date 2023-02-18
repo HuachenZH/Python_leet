@@ -14,7 +14,7 @@ Algo that I might reuse in the future:
 
 What i learnt:
 - delete duplicates in a list
-    > - use dictionary
-    >    mylist = list(dict.fromkeys(mylist))
-    > - use set
-    >    mylist = list({key for key in mylist})
+    > - use dictionary  
+    >    <code>mylist = list(dict.fromkeys(mylist))</code>
+    > - use set  
+    >    <code>mylist = list({key for key in mylist})</code>
