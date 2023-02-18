@@ -11,3 +11,10 @@ Algo that I might reuse in the future:
 - 1137: trinonacci number, recursive and iterative solution
 - 1952: is_prime()
 - 70 : fibo (iterative solution)
+
+What i learnt:
+- delete duplicates in a list
+    > - use dictionary
+    >    mylist = list(dict.fromkeys(mylist))
+    > - use set
+    >    mylist = list({key for key in mylist})
