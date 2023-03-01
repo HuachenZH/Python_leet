@@ -20,5 +20,5 @@ What i learnt:
     >    <code>mylist = list({key for key in mylist})</code>
   
 - delete unpushed commits and restore to origin/main
-    > - git reset hard
+    > - git reset hard  
     >    <code>git reset --hard origin/main</code>
