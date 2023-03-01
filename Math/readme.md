@@ -18,3 +18,7 @@ What i learnt:
     >    <code>mylist = list(dict.fromkeys(mylist))</code>
     > - use set  
     >    <code>mylist = list({key for key in mylist})</code>
+  
+- delete unpushed commits and restore to origin/main
+    > - git reset hard
+    >    <code>git reset --hard origin/main</code>
