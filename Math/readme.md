@@ -18,9 +18,13 @@ What i learnt:
     > - use dictionary  
     >    <code>mylist = list(dict.fromkeys(mylist))</code>
     > - use set  
-    >    <code>mylist = list({key for key in mylist})</code>
-  
+    >    <code>mylist = list({key for key in mylist})</code>  
 - delete unpushed commits and restore to origin/main
     > - git reset hard  
-    >    <code>git reset --hard origin/main</code>
+    >    <code>git reset --hard origin/main</code>  
+- split every character of string
+    >    <code>[\*string]</code>  
+- python map()
+    >    <code>map(int, [\*stringOfnumbers])</code>
+    > split something like "1221" into a list, then turn every element to int
 
