@@ -23,8 +23,8 @@ What i learnt:
     > - git reset hard  
     >    <code>git reset --hard origin/main</code>  
 - split every character of string
-    >    <code>string = "B33rlsg00d"  
-    [\*string]</code>  
+    >    <code>string = "B33rlsg00d"</code>  
+         <code>[\*string]</code>  
 - python map()
     >    <code>map(int, [\*stringOfnumbers])</code>  
     > split something like "1221" into a list, then turn every element to int
