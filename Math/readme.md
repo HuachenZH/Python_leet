@@ -11,6 +11,7 @@ Algo that I might reuse in the future:
 - 1137: trinonacci number, recursive and iterative solution
 - 1952: is_prime()
 - 70 : fibo (iterative solution)
+- 504 : convert a number to base k
 
 What i learnt:
 - delete duplicates in a list
@@ -22,3 +23,4 @@ What i learnt:
 - delete unpushed commits and restore to origin/main
     > - git reset hard  
     >    <code>git reset --hard origin/main</code>
+
