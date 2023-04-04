@@ -12,6 +12,7 @@ Algo that I might reuse in the future:
 - 1952: is_prime()
 - 70 : fibo (iterative solution)
 - 504 : convert a number to base k
+- 168 : python unittest framework
 
 What i learnt:
 - delete duplicates in a list
