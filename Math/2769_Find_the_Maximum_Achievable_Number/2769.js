@@ -6,3 +6,5 @@
 var theMaximumAchievableX = function(num, t) {
     return num + 2*t
 };
+
+console.log(theMaximumAchievableX(6, 2))
