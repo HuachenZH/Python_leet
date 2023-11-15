@@ -17,16 +17,19 @@ expect(5).toBe(5); // true
 */
 
 function expect(actualValue) {
-  return {
-    toBe: function(expectedValue) {
-      if (actualValue === expectedValue) {
-        console.log('Test passed!');
-      } else {
-        console.error(`Test failed! Expected ${expectedValue}, but got ${actualValue}`);
-      }
+    return {
+        toBe: function(expectedValue) {
+            if (actualValue == expectedValue) {
+                return {"value": true}
+            }else {
+                return {"error": "Not Equal"}
+            }
+        },
+        notToBe: function(expectedValue) {
+            
+        }
     }
-  };
-}
+};
 
 // Example usage:
 expect(5).toBe(5); // This should pass
