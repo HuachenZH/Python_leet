@@ -2,19 +2,7 @@
  * @param {string} val
  * @return {Object}
  */
-/*
-var expect = function(val) {
-    return {
-        toBe: function(val2) {
-            console.log(var2)
-        }
-    };
-};
-    
 
-expect(5).toBe(5); // true
-// expect(5).notToBe(5); // throws "Equal"
-*/
 
 function expect(actualValue) {
     return {
@@ -34,6 +22,33 @@ function expect(actualValue) {
         }
     }
 };
+
+
+var expect = function(actualValue) {
+    return {
+        toBe: function(expectedValue) {
+            if (actualValue === expectedValue) {
+                return true
+            }else {
+                throw new Error('Not Equal');
+            }
+        },
+        notToBe: function(expectedValue) {
+            if (actualValue !== expectedValue) {
+                return true
+            }else {
+                throw new Error('Equal');
+            }
+        }
+    };
+};
+    
+
+console.log(expect(5).toBe(5)); // true
+expect(5).notToBe(5); // throws "Equal"
+
+
+
 
 // Example usage:
 console.log(expect(5).toBe(5)); // This should pass
