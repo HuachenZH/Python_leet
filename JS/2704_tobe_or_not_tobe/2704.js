@@ -20,16 +20,16 @@ function expect(actualValue) {
     return {
         toBe: function(expectedValue) {
             if (actualValue === expectedValue) {
-                return {"value": true}
+                return true
             }else {
-                return {"error": "Not Equal"}
+                throw new Error('Not Equal');
             }
         },
         notToBe: function(expectedValue) {
             if (actualValue !== expectedValue) {
-                return {"value": true}
+                return true
             }else {
-                return {"error": "Not Equal"}
+                throw new Error('Equal');
             }
         }
     }
