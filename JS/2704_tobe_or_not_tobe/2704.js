@@ -19,18 +19,22 @@ expect(5).toBe(5); // true
 function expect(actualValue) {
     return {
         toBe: function(expectedValue) {
-            if (actualValue == expectedValue) {
+            if (actualValue === expectedValue) {
                 return {"value": true}
             }else {
                 return {"error": "Not Equal"}
             }
         },
         notToBe: function(expectedValue) {
-            
+            if (actualValue !== expectedValue) {
+                return {"value": true}
+            }else {
+                return {"error": "Not Equal"}
+            }
         }
     }
 };
 
 // Example usage:
-expect(5).toBe(5); // This should pass
-expect(10).toBe(5); // This should fail
+console.log(expect(5).toBe(5)); // This should pass
+console.log(expect(10).toBe(5)); // This should fail
