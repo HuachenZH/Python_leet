@@ -44,12 +44,11 @@ var expect = function(actualValue) {
 };
     
 
-console.log(expect(5).toBe(5)); // true
-expect(5).notToBe(5); // throws "Equal"
-
-
-
-
 // Example usage:
 console.log(expect(5).toBe(5)); // This should pass
 console.log(expect(10).toBe(5)); // This should fail
+
+
+// new stuffs:
+// 1. in a function, return an object containing two functions
+// 2. throw error
