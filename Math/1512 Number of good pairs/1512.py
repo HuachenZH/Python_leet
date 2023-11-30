@@ -6,7 +6,7 @@ class Solution(object):
         :rtype: int
         """
         # A pair (i, j) is called good if nums[i] == nums[j] and i < j.
-        outList=list();
+        outList=list()
         # first for loop : i
         for i in range(len(nums)-1):
             # second for loop : j
@@ -31,7 +31,7 @@ class Solution(object):
         :rtype: int
         """
         # A pair (i, j) is called good if nums[i] == nums[j] and i < j.
-        count=0;
+        count=0
         # first for loop : i
         for i in range(len(nums)-1):
             # second for loop : j
