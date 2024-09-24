@@ -5,13 +5,17 @@ import unittest
 
 class TestStringMethods(unittest.TestCase):
 
-    # def test_upper_0(self):
-    #     solution = Solution()
-    #     self.assertEqual(solution.minExtraChar('dwmodizxvvbosxxw', ["ox","lb","diz","gu","v","ksv","o","nuq","r","txhe","e","wmo","cehy","tskz","ds","kzbu"]), 7)
+    #def test_upper_0(self):
+    #    solution = Solution()
+    #    self.assertEqual(solution.minExtraChar('dwmodizxvvbosxxw', ["ox","lb","diz","gu","v","ksv","o","nuq","r","txhe","e","wmo","cehy","tskz","ds","kzbu"]), 7)
 
-    def test_upper_1(self):
+    #def test_upper_1(self):
+    #    solution = Solution()
+    #    self.assertEqual(solution.minExtraChar('azvzulhlwxwobowijiyebeaskecvtjqwkmaqnvnaomaqnvf', ["na","i","edd","wobow","kecv","b","n","or","jj","zul","vk","yeb","qnfac","azv","grtjba","yswmjn","xowio","u","xi","pcmatm","maqnv"]), 15)
+    
+    def test_upper_2(self):
         solution = Solution()
-        self.assertEqual(solution.minExtraChar('azvzulhlwxwobowijiyebeaskecvtjqwkmaqnvnaomaqnvf', ["na","i","edd","wobow","kecv","b","n","or","jj","zul","vk","yeb","qnfac","azv","grtjba","yswmjn","xowio","u","xi","pcmatm","maqnv"]), 15)
+        self.assertEqual(solution.minExtraChar('rkmsilizktprllwoimafyuqmeqrujxdzgp', ["afy","lyso","ymdt","uqm","cfybt","lwoim","hdzeg","th","rkmsi","d","e","tp","r","jx","tofxe","etjx","llqs","cpir","p","ncz","ofeyx","eqru","l","demij","tjky","jgodm","y","ernt","jfns","akjtl","wt","tk","zg","lxoi","kt"]), 2)
 
 
 
