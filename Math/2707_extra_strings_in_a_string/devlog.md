@@ -71,3 +71,6 @@ Solution:
     # ... truncated
     # at the end, before return, replace "_" by ""
 ```
+
+to_resume:  
+calculate score (occurence * length of word) then replace word from score desc order
