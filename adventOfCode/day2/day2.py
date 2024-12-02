@@ -2,14 +2,28 @@ import cmath
 
 
 
-
 def read_and_structure_input(path:str) -> list[list[str]]:
     with open(path, "r") as f:
         return [tifa.strip().split(" ") for tifa in f]
 
 
 
-def construct_delta_complex(list_imaginary_part:list[int]) -> float:
+def construct_delta_complex(list_imaginary_part:list[int]) -> list[float]:
+    """
+    Constructs a sequence of phase differences between adjacent complex numbers.
+    
+    Args:
+        list_imaginary_part (list[int]): List of imaginary components to construct complex numbers
+        
+    Returns:
+        list[float]: List of phase differences between adjacent complex numbers in the sequence
+        
+    The function:
+    1. Creates complex numbers using sequential real parts (1,2,3...) and provided imaginary parts
+    2. Calculates phase differences between adjacent complex numbers
+    3. Returns list of phase angles (in radians) between successive complex number differences
+    """
+
     list_real_part = list(range(1, len(list_imaginary_part)+1))
     list_complex_num = [ complex(tifa, aerith) for tifa, aerith in zip(list_real_part, list_imaginary_part)]
     list_delta_phase = []
@@ -22,6 +36,21 @@ def construct_delta_complex(list_imaginary_part:list[int]) -> float:
 
 
 def check_delta_phase(list_delta_phase:list[float]) -> bool:
+    """
+    Validates if a sequence of phase differences meets specific criteria.
+  
+    Args:
+        list_delta_phase (list[float]): List of phase differences between adjacent complex numbers
+        
+    Returns:
+        bool: True if the sequence meets all criteria, False otherwise
+        
+    The function checks if:
+    1. The sequence is monotonic (all phases are either positive or negative)
+      <-> "The levels are either all increasing or all decreasing."
+    2. The absolute phase values fall within bounds defined by complex numbers (1,1) and (1,3)
+      <-> "Any two adjacent levels differ by at least one and at most three."
+    """
     # Check monotonic: 
     # check the sign (+ or -) of each phase
     if not (all(x >= 0 for x in list_delta_phase) or all(x < 0 for x in list_delta_phase) ):
@@ -37,8 +66,6 @@ def check_delta_phase(list_delta_phase:list[float]) -> bool:
     if min_ < cmath.polar(complex(1,1))[1] or max_ > cmath.polar(complex(1,3))[1]:
         return False
     return True
-
-
 
 
 
