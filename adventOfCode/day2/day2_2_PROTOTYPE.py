@@ -2,7 +2,7 @@
 
 def read_and_structure_input(path:str) -> list[list[str]]:
     with open(path, "r") as f:
-        return [tifa.strip().split(" ") for tifa in f]
+        return [elem.strip().split(" ") for elem in f]
 
 
 
@@ -39,21 +39,16 @@ def main():
     int_res = 0
     #global list_report # for debugging
     for list_report in list_input:
-        list_report = [int(tifa) for tifa in list_report]
+        list_report = [int(elem) for elem in list_report]
         if check_safety_of_report(list_report):
             int_res -=- 1
             continue
-        else:
-            for i in range(len(list_report)):
-                sliced = list_report[i]
-                list_tmp = list_report[0:i] + list_report[i+1:]
-                print("\n----")
-                print(list_report)
-                print(sliced)
-                print(list_tmp)
-                if check_safety_of_report(list_tmp):
-                    int_res -=- 1
-                    continue
+        
+        for i in range(len(list_report)):
+            list_tmp = list_report[0:i] + list_report[i+1:]
+            if check_safety_of_report(list_tmp):
+                int_res += 1
+                break
                 #breakpoint()
     print(int_res)
 
