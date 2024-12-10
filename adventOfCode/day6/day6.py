@@ -1,3 +1,4 @@
+from tqdm import tqdm
 
 
 def check_obstacle_ahead(head:str, pos:tuple, data:list[str]) -> bool:
@@ -21,15 +22,27 @@ def check_obstacle_ahead(head:str, pos:tuple, data:list[str]) -> bool:
     """
 
     if head == "^":
-        return data[pos[0]-1][pos[1]] == "#"
+        return data[pos[0]-1][pos[1]] == "#" or data[pos[0]-1][pos[1]] == "O"
     elif head == ">":
-        return data[pos[0]][pos[1]+1] == "#"
+        return data[pos[0]][pos[1]+1] == "#" or data[pos[0]][pos[1]+1] == "O"
     elif head == "v":
-        return data[pos[0]+1][pos[1]] == "#"
+        return data[pos[0]+1][pos[1]] == "#" or data[pos[0]+1][pos[1]] == "O"
     elif head == "<":
-        return data[pos[0]][pos[1]-1] == "#"
+        return data[pos[0]][pos[1]-1] == "#" or data[pos[0]][pos[1]-1] == "O"
     else:
         raise ValueError("Head must be one of ^ > v <")
+
+
+
+def check_circle_ahead(head:str, pos:tuple, data:list[str]) -> bool:
+    if head == "^":
+        return data[pos[0]-1][pos[1]] == "O"
+    elif head == ">":
+        return data[pos[0]][pos[1]+1] == "O"
+    elif head == "v":
+        return data[pos[0]+1][pos[1]] == "O"
+    else:
+        return data[pos[0]][pos[1]-1] == "O"
 
 
 
@@ -97,6 +110,10 @@ def check_edge_ahead(head:str, pos:tuple, height:int, width:int) -> bool:
         ValueError: If head is not one of ^, >, v, <
     """
     if head == "^":
+        try:
+            pos[0]-1 < 0
+        except:
+            breakpoint()
         return pos[0]-1 < 0
     elif head == ">":
         return pos[1]+1 >= width
@@ -132,42 +149,53 @@ def part_1(data:list[list[str]]):
 
 
 def part_2(path_input:str):
+    # part_1() modifies the variable data inplace so read data again.
     with open(path_input, "r", encoding="utf-8") as f:
         data = [list(row) for row in f.read().strip().split("\n")]
 
     res = 0
-    pos = next((i, "".join(row).find("^")) for i, row in enumerate(data) if "^" in row)
-    head = "^"
-    breakpoint()
+    pos_init = next((i, "".join(row).find("^")) for i, row in enumerate(data) if "^" in row)
+    head_init = "^"
 
-    for row in data:
-        for icol, column in enumerate(row):
+    flag_debug = False
+    for row in tqdm(data):
+        for icol, column in tqdm(enumerate(row), leave=False):
+            #__debug__if irow==6 and icol==3: flag_debug = True
             if column == ".":
                 # Set obstacle
                 row[icol] = "O"
-                is_stuck = False
-                
-                
-                while not check_edge_ahead(head, pos, len(data), len(data[0])) and not is_stuck:
-                    if head == "^":
-                        taxi = { "^": 0,
-                         ">": 0,
-                         "v": 0,
-                         "<": 0
-                        }
-                    # if obstable ahead, turn righ
+
+                recording = False
+                stuck = False
+                journey = set()
+                pos = pos_init
+                head = head_init
+                while not check_edge_ahead(head, pos, len(data), len(data[0])) and not stuck:
+                    #if flag_debug: breakpoint()
+                    if check_circle_ahead(head, pos, data): recording = True
                     if check_obstacle_ahead(head, pos, data):
+                        if recording:
+                            coords = "_".join([str(i) for i in pos])+"_"+head
+                            if coords not in journey:
+                                journey.add(coords)
+                                #__print(f"journey is {journey}")
+                            else:
+                                # stuck
+                                res += 1
+                                stuck = True
+                                #__print("stuck")
+                                #break
                         head = turn_right(head)
-                        if taxi["^"] == taxi[">"] == taxi["v"] == taxi["<"]:
-                            is_stuck = True
-                            res += 1
                     # if nothing ahead, go
                     else:
-                        data[pos[0]][pos[1]] = "X"
+                        #data[pos[0]][pos[1]] = "X"
                         pos = go_ahead(head, pos)
-                        taxi[head] = taxi[head] + 1
 
-                # Remove obstacle
+                # Remove obstacle for next iteration
+                #__if stuck:
+                    #__print("\n".join(["".join(row_) for row_ in data]))
+                    #__print(" ")
+
                 row[icol] = "."
 
     print(res)
@@ -175,7 +203,7 @@ def part_2(path_input:str):
 
 
 def main():
-    path_input = "sample.txt"
+    path_input = "data.txt"
 
     with open(path_input, "r", encoding="utf-8") as f:
         data = [list(row) for row in f.read().strip().split("\n")]
