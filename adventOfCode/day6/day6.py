@@ -1,3 +1,12 @@
+"""the idea of part 2 is based on the hypothesis that,
+when i reach the same obstacle twice with the same heading direction, 
+then this means that i'm stuck in a loop.
+To code it, i used set to check whether i ve already visited the obstacle with the same
+heading direction. To save some memory, i start populating the set only after meeting
+the "O" that i placed.
+"""
+
+
 from tqdm import tqdm
 
 
@@ -110,10 +119,6 @@ def check_edge_ahead(head:str, pos:tuple, height:int, width:int) -> bool:
         ValueError: If head is not one of ^, >, v, <
     """
     if head == "^":
-        try:
-            pos[0]-1 < 0
-        except:
-            breakpoint()
         return pos[0]-1 < 0
     elif head == ">":
         return pos[1]+1 >= width
@@ -170,7 +175,8 @@ def part_2(path_input:str):
                 journey = set()
                 pos = pos_init
                 head = head_init
-                while not check_edge_ahead(head, pos, len(data), len(data[0])) and not stuck:
+
+                while not check_edge_ahead(head, pos, len(data), len(data[0])):
                     #if flag_debug: breakpoint()
                     if check_circle_ahead(head, pos, data): recording = True
                     if check_obstacle_ahead(head, pos, data):
@@ -183,6 +189,7 @@ def part_2(path_input:str):
                                 # stuck
                                 res += 1
                                 stuck = True
+                                break
                                 #__print("stuck")
                                 #break
                         head = turn_right(head)
