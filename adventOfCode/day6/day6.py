@@ -109,13 +109,7 @@ def check_edge_ahead(head:str, pos:tuple, height:int, width:int) -> bool:
 
 
 
-
-def main():
-    path_input = "data.txt"
-
-    with open(path_input, "r", encoding="utf-8") as f:
-        data = [list(row) for row in f.read().strip().split("\n")]
-
+def part_1(data:list[list[str]]):
     # initial position 
     pos = next((i, "".join(row).find("^")) for i, row in enumerate(data) if "^" in row)
     
@@ -136,6 +130,60 @@ def main():
     print(res)
 
 
+
+def part_2(path_input:str):
+    with open(path_input, "r", encoding="utf-8") as f:
+        data = [list(row) for row in f.read().strip().split("\n")]
+
+    res = 0
+    pos = next((i, "".join(row).find("^")) for i, row in enumerate(data) if "^" in row)
+    head = "^"
+    breakpoint()
+
+    for row in data:
+        for icol, column in enumerate(row):
+            if column == ".":
+                # Set obstacle
+                row[icol] = "O"
+                is_stuck = False
+                
+                
+                while not check_edge_ahead(head, pos, len(data), len(data[0])) and not is_stuck:
+                    if head == "^":
+                        taxi = { "^": 0,
+                         ">": 0,
+                         "v": 0,
+                         "<": 0
+                        }
+                    # if obstable ahead, turn righ
+                    if check_obstacle_ahead(head, pos, data):
+                        head = turn_right(head)
+                        if taxi["^"] == taxi[">"] == taxi["v"] == taxi["<"]:
+                            is_stuck = True
+                            res += 1
+                    # if nothing ahead, go
+                    else:
+                        data[pos[0]][pos[1]] = "X"
+                        pos = go_ahead(head, pos)
+                        taxi[head] = taxi[head] + 1
+
+                # Remove obstacle
+                row[icol] = "."
+
+    print(res)
+
+
+
+def main():
+    path_input = "sample.txt"
+
+    with open(path_input, "r", encoding="utf-8") as f:
+        data = [list(row) for row in f.read().strip().split("\n")]
+
+    part_1(data)
+
+    part_2(path_input)
+    
 
 if __name__ == "__main__":
     main()
