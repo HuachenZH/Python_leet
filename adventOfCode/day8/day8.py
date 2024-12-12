@@ -19,13 +19,36 @@ from itertools import permutations
 
 
 
-def get_antennas(data:list[list[int]]) -> set:
+def get_antennas(data:list[list[str]]) -> set:
+    """
+    Get all unique antennas on the grid.
+    
+    Args:
+        data (list[list[str]]): the grid.
+
+    Returns:
+        set: unique antennas. Each antenna is represented by a string
+    """
     set_antennas = {antenna for row in data for antenna in set(row) if antenna!="."}
     return set_antennas
 
 
 
-def get_coords(data:list[list[int]], set_antennas:set):
+def get_coords(data:list[list[str]], set_antennas:set) -> dict:
+    """
+    Get the coordinate of all antennas. 
+    The bottom left most point of the grid is considered as (0,0).
+    
+    Args:
+        data (list[list[str]]): the grid.
+        set_antennas (set): unique antennas.
+
+    Returns:
+        dict_coords: key: unique antennas. Value: list of coords (tuple) of
+        all locations of the antenna.
+        eg: {'0': [(8, 10), (5, 9), (7, 8), (4, 7)], 'A': [(6, 6), (8, 3), (9, 2)]}
+    """
+
     dict_coords = {}
     for antennas in set_antennas:
         dict_coords[antennas] = []
@@ -39,13 +62,39 @@ def get_coords(data:list[list[int]], set_antennas:set):
 
 
 def jump_over_stationary(coord_jumping:tuple, coord_stationary:tuple) -> tuple:
+    """
+    The jumping point jumps over the stationary point.
+    Calculated by reversing the formula of midpoint. (stationary point is 
+    considered as the midpoint.)
+    
+    Args:
+        coord_jumping (tuple(int,int)): the jumping point.
+        coord_stationary (tuple(int,int)): the stationary point.
+
+    Returns:
+        tuple: the new point after jumping.
+    """
     # they are both tuple of two int
     return (2*coord_stationary[0]-coord_jumping[0], 2*coord_stationary[1]-coord_jumping[1] )
 
 
 
 def jump_2(coord_jumping:tuple, coord_stationary:tuple, size_width:int, size_height:int):
-    # they are both tuple of two int
+    """
+    The jumping point jumps over the stationary point, and over and over until 
+    out of the edge.
+    Calculated by accumulating the delta of the two initial points.
+    
+    Args:
+        coord_jumping (tuple(int,int)): the jumping point.
+        coord_stationary (tuple(int,int)): the stationary point.
+        size_width (int): width of the grid.
+        size_height (int): height of the grid.
+
+    Returns:
+        tuple: list of new points on edge after jumping.
+    """
+
     delta_x = coord_stationary[0] - coord_jumping[0]
     delta_y = coord_stationary[1] - coord_jumping[1]
 
@@ -60,10 +109,20 @@ def jump_2(coord_jumping:tuple, coord_stationary:tuple, size_width:int, size_hei
 
 
 
-
 def is_on_edge(antinode:tuple, size_width:int, size_height:int):
-    # check whether the antinode falls out of the plate
-    # antinode: tuple of two int
+    """
+    Check whether the point (antinode) is still on the edge.
+    
+    Args:
+        antinode (tuple(int,int)): the point to be checked.
+        size_width (int): width of the grid.
+        size_height (int): height of the grid.
+
+    Returns:
+        bool: True if the point is still on the edge,
+        False if the point falls out of the edge.
+    """
+
     if 0 <= antinode[0] <= size_width and 0 <= antinode[1] <= size_height:
         return True
     else:
@@ -104,6 +163,7 @@ def part_2(path_input:str):
     return set_antinodes
 
 
+
 def main():
     path_input = "data.txt"
     part_1(path_input)
@@ -114,5 +174,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-# {'0': [(8, 10), (5, 9), (7, 8), (4, 7)], 'A': [(6, 6), (8, 3), (9, 2)]}
