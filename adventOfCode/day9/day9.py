@@ -5,7 +5,18 @@ Disk:  0..111....22222
 from tqdm import tqdm
 
 
+
 def diskmap_to_disk(data:str) -> list:
+    """
+    Converts a string representation of a disk map into a list of disk blocks.
+
+    Args:
+        data (str): A string containing the disk map, where even indices represent file IDs
+                     and odd indices represent empty spaces.
+
+    Returns:
+        list: A list representing the disk, with file IDs and empty spaces.
+    """
     disk = []
     file_id = 0
     for i,v in enumerate(list(data)):
@@ -19,7 +30,16 @@ def diskmap_to_disk(data:str) -> list:
 
 
 def fragment_disk_part1(disk:list) -> list:
-    # normally there isn't any tailing "."
+    """
+    Fragments the disk by moving file blocks to fill empty spaces.
+
+    Args:
+        disk (list): A list representing the disk with file IDs and empty spaces.
+
+    Returns:
+        list: A list representing the fragmented disk with no trailing empty spaces.
+    """
+    ...
     #__print(disk)
     while "." in disk:
         if disk[-1] == ".":
@@ -37,6 +57,16 @@ def fragment_disk_part1(disk:list) -> list:
     
 
 def fragment_disk_part2(list_disk) -> list[str]:
+    """
+    Fragments the disk by moving file blocks to fill empty spaces in a more complex manner:
+    instead of moving individual files (eg 1), move the whole file block (eg 111).
+
+    Args:
+        list_disk (list): A list representing the disk with file IDs and empty spaces.
+
+    Returns:
+        list[str]: A list representing the fragmented disk with file IDs and empty spaces.
+    """
     list_desc = list(set(list_disk))
     list_desc.remove(".")
     list_desc = [int(i) for i in list_desc]
@@ -101,4 +131,5 @@ if __name__ == "__main__":
 
 # part 1
 # 90840102756 too low
+#   --> root cause: file id can have more than one digit
 # 6395800119709 good
