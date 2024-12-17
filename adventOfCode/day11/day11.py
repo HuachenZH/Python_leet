@@ -41,10 +41,13 @@ def flatten_list(nested_list:list) -> list:
 def part_1_flatten_list(path:str, blink:int):
     with open(path, "r") as f:
         data =  [int(num) for num in f.read().strip().split(" ")]
-        #__print(data)
+    
+    # test purpose
+    data = [18216]
+    print(data)
 
     for _ in tqdm(range(blink)):
-        for i,v in enumerate(tqdm(data, leave=False)):
+        for i,v in enumerate(data):
             if v==0:
                 data[i] = 1
             elif len(str(v)) % 2 == 0:
@@ -53,7 +56,7 @@ def part_1_flatten_list(path:str, blink:int):
                 data[i] = v * 2024
         # Flatten list before next blink
         data = flatten_list(data)
-        #__print(data)
+        print(data)
     print(len(data))
 
 
@@ -64,8 +67,8 @@ def part_1_linked_list(path:str, blink:int):
 
 
 def main():
-    path = "data.txt"
-    blink = 25
+    path = "sample.txt"
+    blink = 3
     part_1_flatten_list(path, blink)
 
 
