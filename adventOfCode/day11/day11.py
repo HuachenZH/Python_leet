@@ -28,9 +28,12 @@ class TestPart1FlattenList(unittest.TestCase):
         expected_output = 55312
         self.assertEqual(len(part_1_flatten_list(path, blink)), expected_output)
 
-
-
-
+    def test_flatten_list_with_data(self):
+        # Test with even numbers
+        path = "data.txt"
+        blink = 25
+        expected_output = 194557
+        self.assertEqual(len(part_1_flatten_list(path, blink)), expected_output)
 
 
 
@@ -74,19 +77,26 @@ def part_1_flatten_list(path:str, blink:int):
         data =  [int(num) for num in f.read().strip().split(" ")]
     
     # test purpose
+    data = [8793800]
     print(data)
 
     for _ in tqdm(range(blink)):
+        print(_)
+        after_blink = []
         for i,v in enumerate(data):
             if v==0:
-                data[i] = 1
+                after_blink.append(1)
             elif len(str(v)) % 2 == 0:
-                data[i] = [int( str(v)[:int(len(str(v))/2)] ),   int(str(v)[int(len(str(v))/2):])]
+                after_blink.append(int(str(v)[:int(len(str(v))/2)]))
+                after_blink.append(int(str(v)[int(len(str(v))/2):]))
             else:
-                data[i] = v * 2024
+                after_blink.append(v * 2024)
         # Flatten list before next blink
-        data = flatten_list(data)
+        data = copy.deepcopy(after_blink)
         #print(data)
+        if _ == 37:
+            print(len(data))
+            breakpoint()
     print(len(data))
     return data
 
@@ -98,12 +108,13 @@ def part_1_linked_list(path:str, blink:int):
 
 
 def main():
-    path = "sample.txt"
-    blink = 6
+    path = "data.txt"
+    blink = 75
     part_1_flatten_list(path, blink)
 
 
 
 if __name__ == "__main__":
-    unittest.main()
+    #unittest.main()
+    main()
 
