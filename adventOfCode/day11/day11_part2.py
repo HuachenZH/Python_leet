@@ -38,6 +38,21 @@ class TestPart1FlattenList(unittest.TestCase):
 
 
 
+def old_new_dict(dict_occur:dict, dict_tmp:dict, old_key:int, new_key:int):
+    if new_key in dict_tmp:
+        dict_tmp[new_key] = dict_tmp[new_key] + dict_occur[old_key]
+    else:
+        dict_tmp[new_key] = dict_occur[old_key]
+    if old_key in dict_tmp:
+        dict_tmp[old_key] = dict_tmp[old_key] - dict_occur[old_key]
+        if dict_tmp[old_key] <0:
+            del dict_tmp[old_key]
+            #breakpoint()
+    return dict_tmp
+
+
+
+
 
 def part_2_maphash(path:str, blink:int):
     with open(path, "r") as f:
@@ -54,17 +69,23 @@ def part_2_maphash(path:str, blink:int):
         for key in list(dict_occur.keys()):
             if key == 0:
                 #dict_occur[1] = dict_occur[key]
-                dict_occur[1] = dict_occur[1]+dict_occur[key] if 1 in dict_occur else dict_occur[key]
-                del dict_occur[key]
+                #dict_tmp[1] = dict_tmp[1]+dict_occur[key] if 1 in dict_tmp else dict_occur[key]
+                dict_tmp = old_new_dict(dict_occur, dict_tmp, 0, 1)
+                #del dict_occur[key]
             elif len(str(key))%2==0:
                 new_key_1 = int(str(key)[:int(len(str(key))/2)])
                 new_key_2 = int(str(key)[int(len(str(key))/2):])
-                dict_occur[new_key_1] = dict_occur[new_key_1]+dict_occur[key] if new_key_1 in dict_occur else dict_occur[key]
-                dict_occur[new_key_2] = dict_occur[new_key_2]+dict_occur[key] if new_key_2 in dict_occur else dict_occur[key]
-                del dict_occur[key]
+                #dict_tmp[new_key_1] = dict_tmp[new_key_1]+dict_occur[key] if new_key_1 in dict_tmp else dict_occur[key]
+                #dict_tmp[new_key_2] = dict_tmp[new_key_2]+dict_occur[key] if new_key_2 in dict_tmp else dict_occur[key]
+                dict_tmp = old_new_dict(dict_occur, dict_tmp, key, new_key_1)
+                dict_tmp = old_new_dict(dict_occur, dict_tmp, key, new_key_2)
+                #del dict_occur[key]
             else:
-                dict_occur[key*2024] = dict_occur[key*2024]+dict_occur[key] if key*2024 in dict_occur else dict_occur[key]
-                del dict_occur[key]
+                #dict_tmp[key*2024] = dict_tmp[key*2024]+dict_occur[key] if key*2024 in dict_tmp else dict_occur[key]
+                dict_tmp = old_new_dict(dict_occur, dict_tmp, key, key*2024)
+                #del dict_occur[key]
+        dict_occur = copy.deepcopy(dict_tmp)
+        del dict_tmp
         #breakpoint()
 
     res = len(list(dict_occur.values()))
