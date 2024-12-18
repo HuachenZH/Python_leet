@@ -7,114 +7,82 @@ import unittest
 
 class TestPart1FlattenList(unittest.TestCase):
     
-    def test_flatten_list_with_simple(self):
+    def test_maphash_with_simple(self):
         # Test with even numbers
         path = "simple.txt"
         blink = 1
-        expected_output = [1, 2024, 1, 0, 9, 9, 2021976]
-        self.assertEqual(part_1_flatten_list(path, blink), expected_output)
+        expected_output = len([1, 2024, 1, 0, 9, 9, 2021976])
+        self.assertEqual(part_2_maphash(path, blink), expected_output)
 
-    def test_flatten_list_with_sample(self):
+    def test_maphash_with_sample(self):
         # Test with even numbers
         path = "sample.txt"
         blink = 6
-        expected_output = [2097446912, 14168, 4048, 2, 0, 2, 4, 40, 48, 2024, 40, 48, 80, 96, 2, 8, 6, 7, 6, 0, 3, 2]
-        self.assertEqual(part_1_flatten_list(path, blink), expected_output)
+        expected_output = len([2097446912, 14168, 4048, 2, 0, 2, 4, 40, 48, 2024, 40, 48, 80, 96, 2, 8, 6, 7, 6, 0, 3, 2])
+        self.assertEqual(part_2_maphash(path, blink), expected_output)
 
-    def test_flatten_list_with_sample2(self):
+    def test_maphash_with_sample2(self):
         # Test with even numbers
         path = "sample.txt"
         blink = 25
         expected_output = 55312
-        self.assertEqual(len(part_1_flatten_list(path, blink)), expected_output)
+        self.assertEqual(part_2_maphash(path, blink), expected_output)
 
-    def test_flatten_list_with_data(self):
+    def test_maphash_with_data(self):
         # Test with even numbers
         path = "data.txt"
         blink = 25
         expected_output = 194557
-        self.assertEqual(len(part_1_flatten_list(path, blink)), expected_output)
+        self.assertEqual(part_2_maphash(path, blink), expected_output)
 
 
 
-def part_1_deprecated(path:str, blink:int):
-    """Result incorrect, root cause: indexing"""
+
+
+def part_2_maphash(path:str, blink:int):
     with open(path, "r") as f:
-        data =  [int(num) for num in f.read().strip().split(" ")]
-
-    for _ in range(blink):
-        tmp = copy.deepcopy(data)
-        print(f"blink is {_}")
-        for i,v in enumerate(tmp):
-            print(f"i,v {i, v}")
-            if v == 0:
-                print("if")
-                data[i] = 1
-            elif len(str(v)) % 2 == 0:
-                print("elif")
-                data = data[:i] + [int( str(v)[:int(len(str(v))/2)] )] + [int(str(v)[int(len(str(v))/2):])] + data[i+1:]
-            else:
-                print("else")
-                data[i] = v * 2024
-            print(data)
-
-
-
-def flatten_list(nested_list:list) -> list:
-    """Flatten a list containing integers and lists of integers."""
-    flat_list = []
-    for item in nested_list:
-        if isinstance(item, list):
-            flat_list.extend(flatten_list(item))  # Recursively flatten the sublist
+        data = [int(num) for num in f.read().strip().split()]
+    dict_occur = {}
+    for num in data:
+        if num in dict_occur:
+            dict_occur[num] += 1
         else:
-            flat_list.append(item)  # Append the integer
-    return flat_list
-
-
-
-def part_1_flatten_list(path:str, blink:int):
-    with open(path, "r") as f:
-        data =  [int(num) for num in f.read().strip().split(" ")]
+            dict_occur[num] = 1
     
-    # test purpose
-    data = [8793800]
-    print(data)
-
-    for _ in tqdm(range(blink)):
-        print(_)
-        after_blink = []
-        for i,v in enumerate(data):
-            if v==0:
-                after_blink.append(1)
-            elif len(str(v)) % 2 == 0:
-                after_blink.append(int(str(v)[:int(len(str(v))/2)]))
-                after_blink.append(int(str(v)[int(len(str(v))/2):]))
+    for _ in range(blink):
+        dict_tmp = copy.deepcopy(dict_occur)
+        for key in list(dict_occur.keys()):
+            if key == 0:
+                #dict_occur[1] = dict_occur[key]
+                dict_occur[1] = dict_occur[1]+dict_occur[key] if 1 in dict_occur else dict_occur[key]
+                del dict_occur[key]
+            elif len(str(key))%2==0:
+                new_key_1 = int(str(key)[:int(len(str(key))/2)])
+                new_key_2 = int(str(key)[int(len(str(key))/2):])
+                dict_occur[new_key_1] = dict_occur[new_key_1]+dict_occur[key] if new_key_1 in dict_occur else dict_occur[key]
+                dict_occur[new_key_2] = dict_occur[new_key_2]+dict_occur[key] if new_key_2 in dict_occur else dict_occur[key]
+                del dict_occur[key]
             else:
-                after_blink.append(v * 2024)
-        # Flatten list before next blink
-        data = copy.deepcopy(after_blink)
-        #print(data)
-        if _ == 37:
-            print(len(data))
-            breakpoint()
-    print(len(data))
-    return data
+                dict_occur[key*2024] = dict_occur[key*2024]+dict_occur[key] if key*2024 in dict_occur else dict_occur[key]
+                del dict_occur[key]
+        #breakpoint()
+
+    res = len(list(dict_occur.values()))
+    print(res)
+    return res
 
 
 
-def part_1_linked_list(path:str, blink:int):
-    pass
 
 
 
 def main():
-    path = "data.txt"
-    blink = 75
-    part_1_flatten_list(path, blink)
+    path = "sample.txt"
+    blink = 6
+    part_2_maphash(path, blink)
 
 
 
 if __name__ == "__main__":
     #unittest.main()
     main()
-
