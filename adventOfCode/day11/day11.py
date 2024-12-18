@@ -1,5 +1,36 @@
 import copy
 from tqdm import tqdm
+import unittest
+
+
+
+
+class TestPart1FlattenList(unittest.TestCase):
+    
+    def test_flatten_list_with_simple(self):
+        # Test with even numbers
+        path = "simple.txt"
+        blink = 1
+        expected_output = [1, 2024, 1, 0, 9, 9, 2021976]
+        self.assertEqual(part_1_flatten_list(path, blink), expected_output)
+
+    def test_flatten_list_with_sample(self):
+        # Test with even numbers
+        path = "sample.txt"
+        blink = 6
+        expected_output = [2097446912, 14168, 4048, 2, 0, 2, 4, 40, 48, 2024, 40, 48, 80, 96, 2, 8, 6, 7, 6, 0, 3, 2]
+        self.assertEqual(part_1_flatten_list(path, blink), expected_output)
+
+    def test_flatten_list_with_sample2(self):
+        # Test with even numbers
+        path = "sample.txt"
+        blink = 25
+        expected_output = 55312
+        self.assertEqual(len(part_1_flatten_list(path, blink)), expected_output)
+
+
+
+
 
 
 
@@ -43,7 +74,6 @@ def part_1_flatten_list(path:str, blink:int):
         data =  [int(num) for num in f.read().strip().split(" ")]
     
     # test purpose
-    data = [18216]
     print(data)
 
     for _ in tqdm(range(blink)):
@@ -56,8 +86,9 @@ def part_1_flatten_list(path:str, blink:int):
                 data[i] = v * 2024
         # Flatten list before next blink
         data = flatten_list(data)
-        print(data)
+        #print(data)
     print(len(data))
+    return data
 
 
 
@@ -68,11 +99,11 @@ def part_1_linked_list(path:str, blink:int):
 
 def main():
     path = "sample.txt"
-    blink = 3
+    blink = 6
     part_1_flatten_list(path, blink)
 
 
 
 if __name__ == "__main__":
-    main()
+    unittest.main()
 
