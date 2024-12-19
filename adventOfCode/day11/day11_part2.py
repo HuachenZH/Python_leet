@@ -5,7 +5,8 @@ now we split x to a=[125] and b=[17], x=a+b,
 f(x) becomes f(a+b). 
 I observed that f(a+b) = f(a) + f(b).
   (malheureusement l'application f n'est pas linéaire dans l'espace préhilbertien 
-  car dans notre cas f(λa+b)≠λf(a)+f(b) )
+  car dans notre cas f(λa+b)≠λf(a)+f(b) ) (chatgpt m'a appris, ce type d'application
+  s'appelle application additive)
 So a list of [1234, 12, 12, 34] can also be represented by a dict
 {1234: 1,
  12: 2,
