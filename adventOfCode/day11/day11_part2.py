@@ -39,17 +39,17 @@ class TestPart1FlattenList(unittest.TestCase):
 
 
 def old_new_dict(dict_occur:dict, dict_tmp:dict, old_key:int, new_key:int):
+    # dict_occur: old, dict_tmp:new
     if new_key in dict_tmp:
         dict_tmp[new_key] = dict_tmp[new_key] + dict_occur[old_key]
     else:
         dict_tmp[new_key] = dict_occur[old_key]
-    if old_key in dict_tmp:
-        dict_tmp[old_key] = dict_tmp[old_key] - dict_occur[old_key]
-        if dict_tmp[old_key] <0:
-            del dict_tmp[old_key]
-            #breakpoint()
+    #if old_key in dict_tmp:
+    #    dict_tmp[old_key] = dict_tmp[old_key] - dict_occur[old_key]
+    #    if dict_tmp[old_key] <0:
+    #        del dict_tmp[old_key]
+    #        #breakpoint()
     return dict_tmp
-
 
 
 
@@ -63,9 +63,13 @@ def part_2_maphash(path:str, blink:int):
             dict_occur[num] += 1
         else:
             dict_occur[num] = 1
-    
-    for _ in range(blink):
-        dict_tmp = copy.deepcopy(dict_occur)
+    #dbp__print("init:")
+    #dbp__print(dict_occur)
+    #dbp__print('  ')
+
+    for _ in tqdm(range(blink)):
+        #dbp__print(f"blink {_}")
+        dict_tmp = {}
         for key in list(dict_occur.keys()):
             if key == 0:
                 #dict_occur[1] = dict_occur[key]
@@ -84,22 +88,23 @@ def part_2_maphash(path:str, blink:int):
                 #dict_tmp[key*2024] = dict_tmp[key*2024]+dict_occur[key] if key*2024 in dict_tmp else dict_occur[key]
                 dict_tmp = old_new_dict(dict_occur, dict_tmp, key, key*2024)
                 #del dict_occur[key]
+        #dbp__print(dict_occur)
         dict_occur = copy.deepcopy(dict_tmp)
+        #dbp__print(dict_tmp)
         del dict_tmp
-        #breakpoint()
 
-    res = len(list(dict_occur.values()))
+    #dbp__print("\nat the end,")
+    #dbp__print(dict_occur)
+    res = sum(list(dict_occur.values()))
     print(res)
     return res
 
 
 
 
-
-
 def main():
-    path = "sample.txt"
-    blink = 6
+    path = "data.txt"
+    blink = 75
     part_2_maphash(path, blink)
 
 
