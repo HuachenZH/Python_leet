@@ -1,3 +1,20 @@
+"""part2, use dict to make it faster.
+if we consider the operation (the if elif else) as an application f, 
+the input list [125, 17] as x, we can say that we apply an application of f(x).
+now we split x to a=[125] and b=[17], x=a+b,
+f(x) becomes f(a+b). 
+I observed that f(a+b) = f(a) + f(b).
+  (malheureusement l'application f n'est pas linéaire dans l'espace préhilbertien 
+  car dans notre cas f(λa+b)≠λf(a)+f(b) )
+So a list of [1234, 12, 12, 34] can also be represented by a dict
+{1234: 1,
+ 12: 2,
+ 34: 1}
+Instead of apply f two times for 12,12 with the list, 
+we only need to apply it once for 12,12 with the dict. 
+"""
+
+
 import copy
 from tqdm import tqdm
 import unittest
