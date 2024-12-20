@@ -1,6 +1,26 @@
 import numpy as np
 import re
 from itertools import groupby, product
+import unittest
+
+
+
+class TestFlowerGarden(unittest.TestCase):
+    
+    def test_with_sample_data(self):
+        # Test with even numbers
+        path = "sample.txt"
+        expected_output = 1930
+        self.assertEqual(part_1(path), expected_output)
+
+    def test_with_data_data(self):
+        # Test with even numbers
+        path = "data.txt"
+        expected_output = 1471452
+        self.assertEqual(part_1(path), expected_output)
+
+
+
 
 
 
@@ -34,24 +54,27 @@ def construct_clusters_of_flower(coords:set) -> list[set[tuple]]:
     # Using product() + groupby() + list comprehension
     man_tups = [sorted(sub) for sub in product(test_list, repeat = 2)
                                             if Manhattan(*sub) == 1]
-    man_tups = man_tups * 10 # 1471452 improvement_1
+    #man_tups = man_tups * 10 # 1471452 improvement_1
+
     res_dict = {ele: {ele} for ele in test_list}
     for tup1, tup2 in man_tups:
         res_dict[tup1] |= res_dict[tup2]
-        res_dict[tup2] = res_dict[tup1]
+        #res_dict[tup2] = res_dict[tup1]
+        # Update each neighbor of tup1, as they are in the same cluster,
+        # they should have the same cluster.
+        for adjacent in res_dict[tup1]:
+            res_dict[adjacent] = res_dict[tup1]
 
     res = [{*next(val)} for key, val in groupby(
             sorted(res_dict.values(), key = id), id)]
-    res2 = []
-    for elem in res:
-        if elem not in res2:
-            res2.append(elem)
-    
+    #res2 = []
+    #for elem in res:
+    #    if elem not in res2:
+    #        res2.append(elem)
 
     # printing result 
     #print("The grouped elements : " + str(res)) 
-    return res2
-
+    return res
 
 
 
@@ -67,7 +90,6 @@ def calculate_perimeter(one_cluster:set[tuple]):
 
 
 
-
 def part_1(path:str) -> None:
     with open(path, "r") as f:
         raw_data = f.read().strip()
@@ -77,30 +99,32 @@ def part_1(path:str) -> None:
     arr_data = np.array(data)
     price = 0
     for flower in set_flowers:
-        print(f"Flower: {flower}")
+        #__print(f"Flower: {flower}")
         set_coords = get_coords_of_flower(arr_data, flower)
         list_clusters = construct_clusters_of_flower(set_coords)
         if flower == "A":
-            breakpoint()
+            #breakpoint()
+            pass
         for i,cluster in enumerate(list_clusters):
-            print(f"    cluster {i}:")
+            #__print(f"    cluster {i}:")
             perim = calculate_perimeter(cluster)
             price += perim * len(cluster)
-            print(f"    perim is {perim}")
+            #__print(f"    perim is {perim}")
     print(price)
+    return price
 
 
 
 def main():
-    path = "data.txt"
+    path = "sample.txt"
     part_1(path)
     #debug_flower("data.txt", "debug.txt", "A")
 
 
 
 if __name__ == "__main__":
-    main()
-
+    #main()
+    unittest.main()
 
 # Needs to improve
 # improvement_1 : see methods.md, to bypass the error, 
