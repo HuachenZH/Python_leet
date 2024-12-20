@@ -8,18 +8,18 @@ import unittest
 class TestFlowerGarden(unittest.TestCase):
     
     def test_with_sample_data(self):
-        # Test with even numbers
         path = "sample.txt"
         expected_output = 1930
-        self.assertEqual(part_1(path), expected_output)
+        self.assertEqual(part_1_and_2(path), expected_output)
 
     def test_with_data_data(self):
-        # Test with even numbers
         path = "data.txt"
         expected_output = 1471452
-        self.assertEqual(part_1(path), expected_output)
+        self.assertEqual(part_1_and_2(path), expected_output)
 
 
+    def test_sides_with_sample(self):
+        calculate_sides(one_cluster:set[tuple])
 
 
 
@@ -78,7 +78,8 @@ def construct_clusters_of_flower(coords:set) -> list[set[tuple]]:
 
 
 
-def calculate_perimeter(one_cluster:set[tuple]):
+# for part 1
+def calculate_perimeter(one_cluster:set[tuple]) -> int:
     perimeter = 0
     for coord in one_cluster:
         neighbors = {(coord[0]+1, coord[1]),
@@ -90,7 +91,13 @@ def calculate_perimeter(one_cluster:set[tuple]):
 
 
 
-def part_1(path:str) -> None:
+# for part 2
+def calculate_sides(one_cluster:set[tuple]) -> int:
+    pass
+
+
+
+def part_1_and_2(path:str) -> None:
     with open(path, "r") as f:
         raw_data = f.read().strip()
         data = [list(row) for row in raw_data.split("\n")]
@@ -108,6 +115,7 @@ def part_1(path:str) -> None:
         for i,cluster in enumerate(list_clusters):
             #__print(f"    cluster {i}:")
             perim = calculate_perimeter(cluster)
+            #perim = calculate_sides(cluster)
             price += perim * len(cluster)
             #__print(f"    perim is {perim}")
     print(price)
@@ -117,7 +125,7 @@ def part_1(path:str) -> None:
 
 def main():
     path = "sample.txt"
-    part_1(path)
+    part_1_and_2(path)
     #debug_flower("data.txt", "debug.txt", "A")
 
 
