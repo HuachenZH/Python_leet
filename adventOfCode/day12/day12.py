@@ -18,8 +18,8 @@ class TestFlowerGarden(unittest.TestCase):
         self.assertEqual(part_1_and_2(path), expected_output)
 
 
-    def test_sides_with_sample(self):
-        calculate_sides(one_cluster:set[tuple])
+    #def test_sides_with_sample(self):
+    #    calculate_sides()
 
 
 
@@ -91,10 +91,70 @@ def calculate_perimeter(one_cluster:set[tuple]) -> int:
 
 
 
-# for part 2
-def calculate_sides(one_cluster:set[tuple]) -> int:
-    pass
 
+def cluster_to_matrix(one_cluster:set[tuple]) -> np.ndarray:
+    """transform a cluster (set of tuples) into a matrix of 0 and 1
+    where 1 represents flower, 0 represents empty space."""
+    arr_coords = np.array(list(one_cluster))
+    arr_coords[:,0] = arr_coords[:,0] - min(arr_coords[:,0])
+    arr_coords[:,1] = arr_coords[:,1] - min(arr_coords[:,1])
+    # number of row <-> height
+    # the +2 at the end is to add two emtpy col/row
+    height = max(arr_coords[:,0]) - min(arr_coords[:,0]) + 1 +2
+    # number of col <-> width
+    width = max(arr_coords[:,1]) - min(arr_coords[:,1]) + 1 +2
+
+    # construct matrix
+    #mat = [ [0]*width ] * height
+    mat = np.zeros((height, width), dtype=int)
+    for coord in arr_coords:
+        mat[coord[0]+1][coord[1]+1] = 1
+    return mat
+
+
+
+def count_groups_in_delta(arr_delta:np.ndarray) -> int:
+    tmp = [" " if num==0  else "a" if num==1 else "b" for num in arr_delta]
+    tmp = "".join(tmp).strip()
+    print(arr_delta)
+    print(tmp)
+    tmp = re.sub(" +", " ", tmp)
+    tmp = re.sub("a+", 'A', tmp)
+    tmp = re.sub("b+", 'B', tmp)
+    tmp = tmp.split(" ")
+    print(tmp)
+
+    res = sum([len(group) for group in tmp ])
+    print(res)
+    return res
+
+
+
+def vertical_scan(mat:np.array) -> int:
+    nb_sides = 0
+    print(mat)
+    for i in range(1, len(mat)):
+        # arr_delta is composed of 0, -1 and 1
+        arr_delta = mat[i] - mat[i-1]
+        # if there are 1 or -1 in arr_delta, then (a) side(s) is/are appeard
+        if sum([abs(num) for num in arr_delta]) > 0:
+            # if 1 are truncated by 0, then there are several sides
+            # 0 1 1 0 0 1 1 <=> two sides
+            nb_sides += count_groups_in_delta(arr_delta)
+            # nb_sides += len("".join([str(num) for num in list(arr_delta)]).replace("0", " ").strip().split(" "))
+    print(nb_sides)
+    print(" ")
+    return nb_sides
+
+
+
+# for part 2
+def count_sides(one_cluster:set[tuple]) -> int:
+    mat = cluster_to_matrix(one_cluster)
+    nb_sides = vertical_scan(mat)
+    nb_sides += vertical_scan(np.rot90(np.fliplr(mat)))
+    print(nb_sides)
+    return nb_sides
 
 
 def part_1_and_2(path:str) -> None:
@@ -107,15 +167,14 @@ def part_1_and_2(path:str) -> None:
     price = 0
     for flower in set_flowers:
         #__print(f"Flower: {flower}")
+        #tmp for build
+        #flower = 'A'
         set_coords = get_coords_of_flower(arr_data, flower)
         list_clusters = construct_clusters_of_flower(set_coords)
-        if flower == "A":
-            #breakpoint()
-            pass
         for i,cluster in enumerate(list_clusters):
             #__print(f"    cluster {i}:")
-            perim = calculate_perimeter(cluster)
-            #perim = calculate_sides(cluster)
+            #perim = calculate_perimeter(cluster)
+            perim = count_sides(cluster)
             price += perim * len(cluster)
             #__print(f"    perim is {perim}")
     print(price)
@@ -124,15 +183,15 @@ def part_1_and_2(path:str) -> None:
 
 
 def main():
-    path = "sample.txt"
+    path = "data.txt"
     part_1_and_2(path)
     #debug_flower("data.txt", "debug.txt", "A")
 
 
 
 if __name__ == "__main__":
-    #main()
-    unittest.main()
+    main()
+    #unittest.main()
 
 # Needs to improve
 # improvement_1 : see methods.md, to bypass the error, 
