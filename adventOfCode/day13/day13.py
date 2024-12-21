@@ -34,26 +34,26 @@ def part_1(path:str):
         #data = [ [int(num) for num in re.findall(r"\d+", row)] for chunk in f.read().strip().split("\n\n") for row in chunk.split("\n") ]
         #data = [ int(num) for chunk in f.read().strip().split("\n\n") for row in chunk.split("\n")  for num in re.findall(r"\d+", row)]
         data = [ [tuple([int(num) for num in re.findall(r"\d+", row)]) for row in chunk.split("\n")] for chunk in f.read().strip().split("\n\n")  ]
+    
+    # part 2
+    for chunk in data:
+        chunk[2] = tuple([chunk[2][0]+10000000000000, chunk[2][1]+10000000000000])
 
     list_can_win = []
-    list_all_debug = []
-    list_win_debug = []
+    #list_all_debug = []
+    #list_win_debug = []
     for vecs in data:
         M,P = prepare_matrices(vecs)
         x = inv(M) @ P
         print(x)
-        list_all_debug.append(tuple(x))
+        #list_all_debug.append(tuple(x))
         if check_x(M, x, P):
             list_can_win.append(x)
-            list_win_debug.append(tuple(x))
+            #list_win_debug.append(tuple(x))
     print(len(list_can_win))
     res = sum(np.array(list_can_win) @ np.array([3,1]))
-    breakpoint()
+    print(res)
 
-    #res = 0
-    #for vect in list_can_win:
-    #    res += int(vect[0])*3 + int(vect[1])
-    #print(res)
     return res
 
 
