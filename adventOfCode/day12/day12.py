@@ -5,7 +5,7 @@ import unittest
 
 
 
-class TestFlowerGarden(unittest.TestCase):
+class TestFlowerGarden_part1(unittest.TestCase):
     
     def test_with_sample_data(self):
         path = "sample.txt"
@@ -18,13 +18,11 @@ class TestFlowerGarden(unittest.TestCase):
         self.assertEqual(part_1_and_2(path), expected_output)
 
 
-    #def test_sides_with_sample(self):
-    #    calculate_sides()
-
 
 
 
 def debug_flower(path_in:str, path_out:str, flower:str) -> None:
+    """Helps visualize a flower of the garden"""
     with open(path_in, "r") as f:
         data = f.read().strip()
     garden = re.sub(r"(?!"+flower+r").", ".", data)
@@ -34,12 +32,30 @@ def debug_flower(path_in:str, path_out:str, flower:str) -> None:
 
 
 
-def Manhattan(tup1, tup2):
+def Manhattan(tup1, tup2) -> int:
+    """Calculates the Manhattan distance between two tuples.
+
+    Args:
+        tup1 (tuple): The first coordinate as a tuple (x1, y1).
+        tup2 (tuple): The second coordinate as a tuple (x2, y2).
+
+    Returns:
+        int: The Manhattan distance between the two coordinates.
+    """
     return abs(tup1[0] - tup2[0]) + abs(tup1[1] - tup2[1])
 
 
 
 def get_coords_of_flower(arr_data, flower) -> set[tuple[int,int]]:
+    """Finds the coordinates of a specified flower in the garden array.
+
+    Args:
+        arr_data (np.ndarray): The array representation of the garden.
+        flower (str): The flower character to search for.
+
+    Returns:
+        set[tuple[int,int]]: A set of tuples representing the coordinates of the flower.
+    """
     coords = np.where(arr_data==flower)
     coords = np.rot90(np.fliplr(coords))
     coords = {tuple(coord)  for coord in coords}
@@ -48,20 +64,36 @@ def get_coords_of_flower(arr_data, flower) -> set[tuple[int,int]]:
 
 
 def construct_clusters_of_flower(coords:set) -> list[set[tuple]]:
+    """Groups adjacent flower coordinates into clusters.
+
+    Args:
+        coords (set): A set of flower coordinates.
+
+    Returns:
+        list[set[tuple]]: A list of sets, where each set contains coordinates of a flower cluster.
+    """
     test_list = list(coords)
 
     # Group Adjacent Coordinates
-    # Using product() + groupby() + list comprehension
+    # Each tuple will meet every other tuple in the list,
+    # only the pairs whose Manhattan distance is 1 will be kept.
+    # This means we are only considering adjacent coordinates (up, down, left, right).
+    # man_tups is composed of pairs of adjacent points.
     man_tups = [sorted(sub) for sub in product(test_list, repeat = 2)
                                             if Manhattan(*sub) == 1]
     #man_tups = man_tups * 10 # 1471452 improvement_1
 
     res_dict = {ele: {ele} for ele in test_list}
+    
+    # At the end of the for loop, about res_dict:
+    # key: each tuple,
+    # value: a list of all the tuples in the same cluster as the key.
     for tup1, tup2 in man_tups:
         res_dict[tup1] |= res_dict[tup2]
         #res_dict[tup2] = res_dict[tup1]
-        # Update each neighbor of tup1, as they are in the same cluster,
-        # they should have the same cluster.
+
+        # Update each neighbor of tup1 to ensure they are in the same cluster,
+        # as they are all connected through tup1.
         for adjacent in res_dict[tup1]:
             res_dict[adjacent] = res_dict[tup1]
 
@@ -80,6 +112,14 @@ def construct_clusters_of_flower(coords:set) -> list[set[tuple]]:
 
 # for part 1
 def calculate_perimeter(one_cluster:set[tuple]) -> int:
+    """Calculates the perimeter of a given flower cluster.
+
+    Args:
+        one_cluster (set[tuple]): A set of coordinates representing the flower cluster.
+
+    Returns:
+        int: The calculated perimeter of the cluster.
+    """
     perimeter = 0
     for coord in one_cluster:
         neighbors = {(coord[0]+1, coord[1]),
@@ -93,8 +133,14 @@ def calculate_perimeter(one_cluster:set[tuple]) -> int:
 
 
 def cluster_to_matrix(one_cluster:set[tuple]) -> np.ndarray:
-    """transform a cluster (set of tuples) into a matrix of 0 and 1
-    where 1 represents flower, 0 represents empty space."""
+    """Transforms a flower cluster into a binary matrix representation.
+
+    Args:
+        one_cluster (set[tuple]): A set of coordinates representing the flower cluster.
+
+    Returns:
+        np.ndarray: A 2D binary matrix where 1 represents flower and 0 represents empty space.
+    """
     arr_coords = np.array(list(one_cluster))
     arr_coords[:,0] = arr_coords[:,0] - min(arr_coords[:,0])
     arr_coords[:,1] = arr_coords[:,1] - min(arr_coords[:,1])
@@ -114,6 +160,21 @@ def cluster_to_matrix(one_cluster:set[tuple]) -> np.ndarray:
 
 
 def count_groups_in_delta(arr_delta:np.ndarray) -> int:
+    """Counts the number of groups of sides in the delta array.
+    A few examples can help understand:
+    0  1  1  1  1  1  1  0 -> returns 1
+    0  1  1  1 -1 -1 -1  0 -> returns 2
+    0  1  1  0 -1 -1 -1  0 -> returns 2
+    0  0  0  1  1  1  0  0 -> returns 1
+
+    Args:
+        arr_delta (np.ndarray): An array representing the difference between two rows of the matrix.
+        the first and last element of arr_delta is always 0.
+        Possible values: 0, 1, -1
+
+    Returns:
+        int: The total number of groups of sides found in the delta.
+    """
     tmp = [" " if num==0  else "a" if num==1 else "b" for num in arr_delta]
     tmp = "".join(tmp).strip()
     print(arr_delta)
@@ -131,6 +192,15 @@ def count_groups_in_delta(arr_delta:np.ndarray) -> int:
 
 
 def vertical_scan(mat:np.array) -> int:
+    """Performs a vertical scan on the matrix to count the number of sides
+    within the direction of scan.
+
+    Args:
+        mat (np.ndarray): The binary matrix representation of the flower cluster.
+
+    Returns:
+        int: The total number of sides detected in the matrix.
+    """
     nb_sides = 0
     print(mat)
     for i in range(1, len(mat)):
@@ -150,11 +220,22 @@ def vertical_scan(mat:np.array) -> int:
 
 # for part 2
 def count_sides(one_cluster:set[tuple]) -> int:
+    """Counts the total number of sides for a given flower cluster.
+
+    Args:
+        one_cluster (set[tuple]): A set of coordinates representing the flower cluster.
+
+    Returns:
+        int: The total number of sides for the cluster.
+    """
     mat = cluster_to_matrix(one_cluster)
     nb_sides = vertical_scan(mat)
+    # in fact rot90 is sufficient, fliplr is not necessary.
     nb_sides += vertical_scan(np.rot90(np.fliplr(mat)))
     print(nb_sides)
     return nb_sides
+
+
 
 
 def part_1_and_2(path:str) -> None:
@@ -173,7 +254,9 @@ def part_1_and_2(path:str) -> None:
         list_clusters = construct_clusters_of_flower(set_coords)
         for i,cluster in enumerate(list_clusters):
             #__print(f"    cluster {i}:")
-            #perim = calculate_perimeter(cluster)
+            # part 1
+            perim = calculate_perimeter(cluster)
+            # part 2
             perim = count_sides(cluster)
             price += perim * len(cluster)
             #__print(f"    perim is {perim}")
