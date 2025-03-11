@@ -23,31 +23,75 @@ def get_initial_position(list_warehouse:list) -> tuple[int]:
 
 
 
-def look_ahead(list_warehouse:list, str_movement:str, 
+def look_ahead_including_self(list_warehouse:list, str_movement:str, 
                curr_pos:tuple[int]) -> str:
+    # the returned string should be what the robot see, from left to
+    # right. 
+    # If look left and warehouse is like
+    # #..O.@
+    # then it should return .O..#
+    # so while looking left or up, reverse the returned string
     if str_movement == "<":
-        return list_warehouse[curr_pos[0]][:curr_pos[1]]
+        return list_warehouse[curr_pos[0]][:curr_pos[1]+1][::-1]
     if str_movement == ">":
-        return list_warehouse[curr_pos[0]][curr_pos[1]+1:]
+        return list_warehouse[curr_pos[0]][curr_pos[1]:]
     if str_movement == "^":
         list_warehouse_t = transpose_warehouse(list_warehouse)
-        return list_warehouse_t[curr_pos[1]][:curr_pos[0]]
+        return list_warehouse_t[curr_pos[1]][:curr_pos[0]+1][::-1]
     if str_movement == "v":
         list_warehouse_t = transpose_warehouse(list_warehouse)
-        return list_warehouse_t[curr_pos[1]][curr_pos[0]+1:]
+        return list_warehouse_t[curr_pos[1]][curr_pos[0]:]
+
+
+
+
+def check_ahead_and_go(warehouse:list[str], movement:str, 
+                       tup_robot_pos:tuple[int]) -> str:
+    # returns the new path ahead
+    path_ahead = look_ahead_including_self(warehouse, movement, tup_robot_pos)
+    breakpoint()
+
+    # move one
+    if path_ahead[1:][0] == ".":
+        return "move"
+    # push one
+    elif path_ahead[1:][:2] == "O.":
+        return "push one"
+    # cannot move, wall ahread
+    elif path_ahead[1:][0] == "#":
+        return "idle - wall ahead"
+    # push several, or cannot push
+    elif path_ahead[1:][:2] == "OO" and path_ahead.count("0") > 1:
+        # OOOO..O#
+        # OOOO#..O#
+        # OO...#..#
+        if path_ahead.find(".") < path_ahead.find("#"):
+            return f"push to {path_ahead.find('.')}"
+        else:
+            return "idle - can't push"
+    # other cases
+    else:
+        raise RuntimeError(f"Unexpected case, path ahead: {path_ahead}")
+    
 
 
 
 def part1():
+    print("\n".join(WAREHOUSE_INIT))
     # get init pos
     tup_init_pos = get_initial_position(WAREHOUSE_INIT)
+    warehouse = WAREHOUSE_INIT
 
     # look ahead
-    # test code
-    path_ahead = look_ahead(WAREHOUSE_INIT, "^", tup_init_pos)
-    breakpoint()
+    tup_robot_pos = tup_init_pos
+    for movement in MOVEMENTS:
+        new_path_ahead = check_ahead_and_go(warehouse, movement, tup_robot_pos)
+        # new warehouse
+        # new tup_robot_pos
+        
 
     # check ahead
+    breakpoint()
 
     # push box
     pass
