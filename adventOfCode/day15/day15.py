@@ -49,26 +49,32 @@ def check_ahead_and_go(warehouse:list[str], movement:str,
                        tup_robot_pos:tuple[int]) -> str:
     # returns the new path ahead
     path_ahead = look_ahead_including_self(warehouse, movement, tup_robot_pos)
-    breakpoint()
 
     # move one
     if path_ahead[1:][0] == ".":
-        return "move"
+        # permute first and second character
+        # @.. becomes 
+        # .@.
+        return path_ahead[1] + path_ahead[0] + path_ahead[2:]
     # push one
     elif path_ahead[1:][:2] == "O.":
-        return "push one"
-    # cannot move, wall ahread
+        # @O..OO# becomes
+        # .@O.OO#
+        return  path_ahead[2] + path_ahead[:2] + path_ahead[3:]
+    # cannot move, wall ahead
     elif path_ahead[1:][0] == "#":
-        return "idle - wall ahead"
+        return path_ahead
     # push several, or cannot push
     elif path_ahead[1:][:2] == "OO" and path_ahead.count("0") > 1:
-        # OOOO..O#
-        # OOOO#..O#
-        # OO...#..#
+        # @OOOO..O#
+        # @OOOO#..O#
+        # @OO...#..#
         if path_ahead.find(".") < path_ahead.find("#"):
-            return f"push to {path_ahead.find('.')}"
+            # There is at least a space appears before wall. Can push.
+            return "." + path_ahead[:path_ahead.find(".")] + path_ahead[path_ahead.find(".")+1:]
         else:
-            return "idle - can't push"
+            # cannot push
+            return path_ahead
     # other cases
     else:
         raise RuntimeError(f"Unexpected case, path ahead: {path_ahead}")
@@ -86,12 +92,10 @@ def part1():
     tup_robot_pos = tup_init_pos
     for movement in MOVEMENTS:
         new_path_ahead = check_ahead_and_go(warehouse, movement, tup_robot_pos)
-        # new warehouse
-        # new tup_robot_pos
+        # to_resume
+        # replace the path ahead, including self
         
 
-    # check ahead
-    breakpoint()
 
     # push box
     pass
