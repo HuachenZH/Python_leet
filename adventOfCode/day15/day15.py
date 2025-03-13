@@ -15,7 +15,7 @@ def transpose_warehouse(list_warehouse:list) -> list[str]:
 
 
 
-def get_initial_position(list_warehouse:list) -> tuple[int]:
+def get_robot_position(list_warehouse:list) -> tuple[int]:
     # returns tuple[int], (irow, icol)
     for i,row in enumerate(list_warehouse):
         if row.find("@") != -1:
@@ -45,10 +45,9 @@ def look_ahead_including_self(list_warehouse:list, str_movement:str,
 
 
 
-def check_ahead_and_go(warehouse:list[str], movement:str, 
-                       tup_robot_pos:tuple[int]) -> str:
+def calculate_new_path_ahead(warehouse:list[str], movement:str, 
+                       tup_robot_pos:tuple[int], path_ahead:str) -> str:
     # returns the new path ahead
-    path_ahead = look_ahead_including_self(warehouse, movement, tup_robot_pos)
 
     # move one
     if path_ahead[1:][0] == ".":
@@ -65,7 +64,7 @@ def check_ahead_and_go(warehouse:list[str], movement:str,
     elif path_ahead[1:][0] == "#":
         return path_ahead
     # push several, or cannot push
-    elif path_ahead[1:][:2] == "OO" and path_ahead.count("0") > 1:
+    elif path_ahead[1:][:2] == "OO" and path_ahead.count("O") > 1:
         # @OOOO..O#
         # @OOOO#..O#
         # @OO...#..#
@@ -77,24 +76,45 @@ def check_ahead_and_go(warehouse:list[str], movement:str,
             return path_ahead
     # other cases
     else:
+        breakpoint()
         raise RuntimeError(f"Unexpected case, path ahead: {path_ahead}")
     
+
+
+def replace_new_path(warehouse:list[str], movement:str,
+                     tup_robot_pos:tuple[int], new_path_ahead:str) -> list[str]:
+    # returns new warehouse
+    # if move is ">", horizontal, keep order
+    if movement == ">":
+        line = warehouse[tup_robot_pos[0]]
+        warehouse[tup_robot_pos[0]] = line[:tup_robot_pos[1]] + new_path_ahead
+    # if move is "<", horizontal, reverse order
+    if movement == "<":
+        line = warehouse[tup_robot_pos[0]]
+        breakpoint()
+        warehouse[tup_robot_pos[0]] = new_path_ahead[::-1] + line[tup_robot_pos[1]+1:]
+        breakpoint()
+        print("-"*79)
+    # if move is "v", vertical, transpose and keep order
+    # if move is "^", vertical, transpose then reverse order
+    return warehouse
+
 
 
 
 def part1():
     print("\n".join(WAREHOUSE_INIT))
-    # get init pos
-    tup_init_pos = get_initial_position(WAREHOUSE_INIT)
     warehouse = WAREHOUSE_INIT
 
     # look ahead
-    tup_robot_pos = tup_init_pos
+    # initial pos
+    tup_robot_pos = get_robot_position(WAREHOUSE_INIT)
     for movement in MOVEMENTS:
-        new_path_ahead = check_ahead_and_go(warehouse, movement, tup_robot_pos)
-        # to_resume
-        # replace the path ahead, including self
-        
+        path_ahead = look_ahead_including_self(warehouse, movement, tup_robot_pos)
+        new_path_ahead = calculate_new_path_ahead(warehouse, movement, tup_robot_pos, path_ahead)
+        if new_path_ahead != path_ahead:
+            warehouse = replace_new_path(warehouse, movement, tup_robot_pos, new_path_ahead)
+        tup_robot_pos = get_robot_position(warehouse)
 
 
     # push box
@@ -108,3 +128,12 @@ def main():
 if __name__ == "__main__":
     main()
     
+
+
+# to_resume:
+# breakpoint at line 79, unexpected case: @O#
+# need to rewrite the logic in calculate_new_path_ahead(), combine some conditions
+# if "O" in path_ahead, if "." is found before "#", then can move
+# notice that if "." does not existe it returns -1 which is always < find("#")
+
+# print("\n".join(warehouse))
