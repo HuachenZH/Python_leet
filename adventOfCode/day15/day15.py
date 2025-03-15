@@ -1,8 +1,9 @@
-
-with open("data_warehouse.txt", "r") as f:
+#
+with open("data/data_warehouse_part1.txt", "r") as f:
     WAREHOUSE_INIT = f.read().strip().split("\n") # list[str]
-with open("data_movements.txt", "r") as f:
+with open("data/data_movements_part1.txt", "r") as f:
     MOVEMENTS = "".join(f.read().strip().split("\n")) # str
+
 
 
 def transpose_warehouse(list_warehouse:list) -> list[str]:
@@ -11,7 +12,6 @@ def transpose_warehouse(list_warehouse:list) -> list[str]:
     # However if you run it in interactive session, it will be fine.
     return [ "".join([row[icol] for row in list_warehouse]) 
             for icol in range(len(list_warehouse))]
-
 
 
 
@@ -41,7 +41,6 @@ def look_ahead_including_self(list_warehouse:list, str_movement:str,
     if str_movement == "v":
         list_warehouse_t = transpose_warehouse(list_warehouse)
         return list_warehouse_t[curr_pos[1]][curr_pos[0]:]
-
 
 
 
@@ -118,8 +117,8 @@ def calculate_lanternfish_coordinates(warehouse:list[str]) -> str:
 
 
 def part1():
-    print("start")
-    print("\n".join(WAREHOUSE_INIT))
+    print("start:")
+    print("\n".join(WAREHOUSE_INIT) + "\n")
     warehouse = WAREHOUSE_INIT
 
     # look ahead
@@ -133,8 +132,8 @@ def part1():
         if new_path_ahead != path_ahead:
             warehouse = replace_new_path(warehouse, movement, tup_robot_pos, new_path_ahead)
         tup_robot_pos = get_robot_position(warehouse)
-    print("end")
-    print("\n".join(warehouse))
+    print("end:")
+    print("\n".join(warehouse) + "\n")
 
     sumcoord = calculate_lanternfish_coordinates(warehouse)
     print(sumcoord)
