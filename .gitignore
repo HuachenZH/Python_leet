@@ -2,3 +2,6 @@ package-lock.json
 .python-version
 test.js
 __pycache__
+
+data_movements_part1.txt
+data_warehouse_part1.txt
