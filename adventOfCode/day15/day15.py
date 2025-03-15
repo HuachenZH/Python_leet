@@ -48,35 +48,32 @@ def look_ahead_including_self(list_warehouse:list, str_movement:str,
 def calculate_new_path_ahead(warehouse:list[str], movement:str, 
                        tup_robot_pos:tuple[int], path_ahead:str) -> str:
     # returns the new path ahead
+    # path_ahead includes robot itself "@"
 
-    # move one
+    # Nothing ahead, move one
     if path_ahead[1:][0] == ".":
         # permute first and second character
         # @.. becomes 
         # .@.
         return path_ahead[1] + path_ahead[0] + path_ahead[2:]
-    # push one
-    elif path_ahead[1:][:2] == "O.":
-        # @O..OO# becomes
-        # .@O.OO#
-        return  path_ahead[2] + path_ahead[:2] + path_ahead[3:]
+
     # cannot move, wall ahead
     elif path_ahead[1:][0] == "#":
         return path_ahead
-    # push several, or cannot push
-    elif path_ahead[1:][:2] == "OO" and path_ahead.count("O") > 1:
-        # @OOOO..O#
-        # @OOOO#..O#
-        # @OO...#..#
-        if path_ahead.find(".") < path_ahead.find("#"):
-            # There is at least a space appears before wall. Can push.
-            return "." + path_ahead[:path_ahead.find(".")] + path_ahead[path_ahead.find(".")+1:]
-        else:
-            # cannot push
-            return path_ahead
+
+    # Box ahead, can push, eg @OOOO..#
+    elif (path_ahead[1:][0] == "O" 
+        and "." in path_ahead
+        and path_ahead.find(".") < path_ahead.find("#")):
+        return "." + path_ahead[:path_ahead.find(".")] + path_ahead[path_ahead.find(".")+1:] 
+
+    # Box ahead, cannot push, eg @OOOOO#
+    elif (path_ahead[1:][0] == "O" 
+        and path_ahead.find(".")==-1):
+        return path_ahead
+
     # other cases
     else:
-        breakpoint()
         raise RuntimeError(f"Unexpected case, path ahead: {path_ahead}")
     
 
