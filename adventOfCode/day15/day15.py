@@ -1,7 +1,7 @@
 
-with open("data_warehouse_small.txt", "r") as f:
+with open("data_warehouse.txt", "r") as f:
     WAREHOUSE_INIT = f.read().strip().split("\n") # list[str]
-with open("data_movements_small.txt", "r") as f:
+with open("data_movements.txt", "r") as f:
     MOVEMENTS = "".join(f.read().strip().split("\n")) # str
 
 
@@ -67,9 +67,13 @@ def calculate_new_path_ahead(warehouse:list[str], movement:str,
         and path_ahead.find(".") < path_ahead.find("#")):
         return "." + path_ahead[:path_ahead.find(".")] + path_ahead[path_ahead.find(".")+1:] 
 
-    # Box ahead, cannot push, eg @OOOOO#
+    # Box ahead, cannot push, no space, eg @OOOOO#
     elif (path_ahead[1:][0] == "O" 
         and path_ahead.find(".")==-1):
+        return path_ahead
+    # Box ahead, cannot push, wall before space, eg @OO#...#
+    elif (path_ahead[1:][0] == "O" 
+        and path_ahead.find(".") > path_ahead.find("#")):
         return path_ahead
 
     # other cases
@@ -81,25 +85,40 @@ def calculate_new_path_ahead(warehouse:list[str], movement:str,
 def replace_new_path(warehouse:list[str], movement:str,
                      tup_robot_pos:tuple[int], new_path_ahead:str) -> list[str]:
     # returns new warehouse
-    # if move is ">", horizontal, keep order
+    # if move is ">", horizontal, keep order of path_ahead
     if movement == ">":
         line = warehouse[tup_robot_pos[0]]
         warehouse[tup_robot_pos[0]] = line[:tup_robot_pos[1]] + new_path_ahead
-    # if move is "<", horizontal, reverse order
+    # if move is "<", horizontal, reverse order of path_ahead
     if movement == "<":
         line = warehouse[tup_robot_pos[0]]
-        breakpoint()
         warehouse[tup_robot_pos[0]] = new_path_ahead[::-1] + line[tup_robot_pos[1]+1:]
-        breakpoint()
-        print("-"*79)
+
     # if move is "v", vertical, transpose and keep order
+    if movement == "v":
+        warehouse = transpose_warehouse(warehouse)
+        line = warehouse[tup_robot_pos[1]]
+        warehouse[tup_robot_pos[1]] = line[:tup_robot_pos[0]] + new_path_ahead
+        warehouse = transpose_warehouse(warehouse)
     # if move is "^", vertical, transpose then reverse order
+    if movement == "^":
+        warehouse = transpose_warehouse(warehouse)
+        line = warehouse[tup_robot_pos[1]]
+        warehouse[tup_robot_pos[1]] = new_path_ahead[::-1] + line[tup_robot_pos[0]+1:]
+        warehouse = transpose_warehouse(warehouse)
+
     return warehouse
+
+
+
+def calculate_lanternfish_coordinates(warehouse:list[str]) -> str:
+    return sum([i*100+j  for i,line in enumerate(warehouse) for j,char in enumerate(line) if char=="O"])
 
 
 
 
 def part1():
+    print("start")
     print("\n".join(WAREHOUSE_INIT))
     warehouse = WAREHOUSE_INIT
 
@@ -107,15 +126,19 @@ def part1():
     # initial pos
     tup_robot_pos = get_robot_position(WAREHOUSE_INIT)
     for movement in MOVEMENTS:
+        # Look up path ahead
         path_ahead = look_ahead_including_self(warehouse, movement, tup_robot_pos)
+        # Calculate new path: push or not
         new_path_ahead = calculate_new_path_ahead(warehouse, movement, tup_robot_pos, path_ahead)
         if new_path_ahead != path_ahead:
             warehouse = replace_new_path(warehouse, movement, tup_robot_pos, new_path_ahead)
         tup_robot_pos = get_robot_position(warehouse)
+    print("end")
+    print("\n".join(warehouse))
 
+    sumcoord = calculate_lanternfish_coordinates(warehouse)
+    print(sumcoord)
 
-    # push box
-    pass
 
 
 def main():
