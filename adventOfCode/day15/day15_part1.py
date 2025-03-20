@@ -23,7 +23,7 @@ def get_robot_position(list_warehouse:list) -> tuple[int]:
 
 
 
-def look_ahead_including_self(list_warehouse:list, str_movement:str, 
+def look_ahead_including_self(list_warehouse:list[str], str_movement:str, 
                curr_pos:tuple[int]) -> str:
     # the returned string should be what the robot see, from left to
     # right. 
