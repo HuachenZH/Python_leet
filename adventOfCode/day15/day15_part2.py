@@ -12,24 +12,70 @@ with open("data/data_warehouse_large.txt", "r") as f:
 
     # twice as wide, list[str]
     WAREHOUSE_INIT = [ row.replace("#","##").replace("O","[]").replace(".","..").replace("@","@.") for row in f.read().strip().split("\n") ]
-    breakpoint()
 
 with open("data/data_movements_part1.txt", "r") as f:
     MOVEMENTS = "".join(f.read().strip().split("\n")) # str
-
-for row in WAREHOUSE_INIT:
-    for j in range(len(row)):
-        if row[j] == "#": row[j] = "##"
-        if row[j] == "O": row[j] = "[]"
-        if row[j] == ".": row[j] = ".."
-        if row[j] == "@": row[j] = "@."
-WAREHOUSE_INIT = ["".join(row) for row in WAREHOUSE_INIT ]
-
 
 
 
 def calculate_lanternfish_coordinates_part2(warehouse:list[str]) -> str:
     return sum([i*100+j  for i,line in enumerate(warehouse) for j,char in enumerate(line) if char=="[" or char=="]"])
+
+
+
+def find_pairing_horizontally(box:str, tup_robot_pos:tuple[int]):
+    if box == "[":
+        return (tup_robot_pos[0], tup_robot_pos[1]+1)
+    if box == "]":
+        return (tup_robot_pos[0], tup_robot_pos[1]-1)
+
+
+
+def _up(tup_pos:tuple[int]):
+    return (tup_pos[0]-1, tup_pos[1])
+
+
+def _down(tup_pos:tuple[int]):
+    return (tup_pos[0]+1, tup_pos[1])
+
+
+def _left(tup_pos:tuple[int]):
+    return (tup_pos[0], tup_pos[1]-1)
+
+
+def _right(tup_pos:tuple[int]):
+    return (tup_pos[0], tup_pos[1]+1)
+
+
+def _get_shape(warehouse:list[str], pos:tuple[int]):
+    return warehouse[pos[0]][pos[1]]
+
+
+
+def find_next_line_boxes(warehouse:list[str], curr_box_positions:list[tuple[int]]):
+    # currently "next" means up
+    nextline_box_positions = []
+    for pos in curr_box_positions:
+        nextline_box_positions.push(_up(pos))
+        adj_shape = _get_shape(warehouse, _up(pos))
+        if adj_shape in "[]":
+            nextline_box_positions.push(_up(pos))
+            if adj_shape != _get_shape(warehouse, pos):
+                nextline_box_positions.push(find_pairing_horizontally(_up(pos)))
+    return nextline_box_positions
+
+
+
+
+
+def can_push_vertically(warehouse:list[str], tup_robot_pos:tuple[int]):
+    flag = True
+    while flag:
+        nextline_box_positions = find_next_line_boxes(warehouse, tup_robot_pos)
+        if not nextline_box_positions and len(nextline_box_positions) == 0:
+            flag = False
+            # resume_here
+
 
 
 
@@ -48,7 +94,9 @@ def main():
             tup_robot_pos = get_robot_position(warehouse)
 
         if movement == "^" or movement == "v":
-            pass
+            can_push_vertically(warehouse, tup_robot_pos)
+            # update warehouse
+            warehouse = warehouse
 
     sumcoord = calculate_lanternfish_coordinates_part2(warehouse)
     print(sumcoord)
