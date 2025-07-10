@@ -32,6 +32,7 @@ def find_pairing_horizontally(box:str, tup_robot_pos:tuple[int]):
 
 
 def _up(tup_pos:tuple[int]):
+    breakpoint()
     return (tup_pos[0]-1, tup_pos[1])
 
 
@@ -56,14 +57,13 @@ def find_next_line_boxes(warehouse:list[str], curr_box_positions:list[tuple[int]
     # currently "next" means up
     nextline_box_positions = []
     for pos in curr_box_positions:
-        nextline_box_positions.push(_up(pos))
+        nextline_box_positions.append(_up(pos))
         adj_shape = _get_shape(warehouse, _up(pos))
         if adj_shape in "[]":
-            nextline_box_positions.push(_up(pos))
+            nextline_box_positions.append(_up(pos))
             if adj_shape != _get_shape(warehouse, pos):
-                nextline_box_positions.push(find_pairing_horizontally(_up(pos)))
+                nextline_box_positions.append(find_pairing_horizontally(_up(pos)))
     return nextline_box_positions
-
 
 
 
@@ -71,11 +71,12 @@ def find_next_line_boxes(warehouse:list[str], curr_box_positions:list[tuple[int]
 def can_push_vertically(warehouse:list[str], tup_robot_pos:tuple[int]):
     flag = True
     while flag:
+        # to_resume: argument error, tup_robot_pos is tuple not list.
+        # at first iteration, it should be a list
         nextline_box_positions = find_next_line_boxes(warehouse, tup_robot_pos)
         if not nextline_box_positions and len(nextline_box_positions) == 0:
             flag = False
-            # resume_here
-
+            breakpoint()
 
 
 
