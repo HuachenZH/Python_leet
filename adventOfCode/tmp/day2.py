@@ -12,11 +12,12 @@ def is_invalid_id(num:int) -> bool:
 
 
 def main():
-    with open("day2_input_small.txt", "r") as f:
+    with open("day2_input.txt", "r") as f:
         ranges = f.read().strip().split(",")
     
     res = 0
     for range_ in ranges:
+        print(f"checking range {range_}")
         start = int(range_.split("-")[0])
         end = int(range_.split("-")[1])
 
@@ -27,6 +28,7 @@ def main():
 
         for i in range(start, end+1):
             if is_invalid_id(i):
+                print(f"    Found {i}")
                 res += i
 
     print(res)
