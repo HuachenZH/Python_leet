@@ -8,7 +8,7 @@ def read_input(path:str) -> str:
 
 
 
-def main():
+def part_1():
     df = read_input("input.txt")
 
     list_tmp = df["tifa"].to_list()
@@ -23,10 +23,17 @@ def main():
     int_res = int(df["res"].sum())
     print(int_res)
 
-    #breakpoint()
+
+
+def part_2():
+    df = read_input("input.txt")
+    tifa = df["tifa"].to_list()
+    aerith = df["aerith"].to_list()
+    print(sum([left * aerith.count(left) for left in tifa]))
+
 
 
 
 if __name__ == "__main__":
-    main()
+    part_2()
 
