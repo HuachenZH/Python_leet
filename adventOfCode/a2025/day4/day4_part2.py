@@ -22,6 +22,12 @@ def count_adj_sweetrolls(grid:list[str], irow:int, icol:int) -> int:
                          +grid[irow+1][icol-1] + grid[irow+1][icol] + grid[irow+1][icol+1])
     return count_adj_sweetroll
 
+        
+
+def remove_sweetrolls(grid:list[list[int]], sweetrolls_to_remove:list[tuple[int]]) -> list[list[int]]:
+    for coord in sweetrolls_to_remove:
+        grid[coord[0]][coord[1]] = 0
+    return grid
 
 
 def main():
@@ -37,12 +43,19 @@ def main():
     grid = transform_grid_to_zero_and_one(grid)
 
     res = 0
-    # Do not iterate over newly added "...." edge
-    for i in range(1, len(grid)-1):
-        for j in range(1, len(grid[i])-1):
-            if grid[i][j] == 1:
-                if count_adj_sweetrolls(grid, i, j) < 4:
-                    res += 1
+    sweetrolls_to_remove = [1] # to start the first iteration
+    while len(sweetrolls_to_remove) > 0:
+        sweetrolls_to_remove = [] # list of index. list[tuple[int]]
+        # Do not iterate over newly added "...." edge
+        for i in range(1, len(grid)-1):
+            for j in range(1, len(grid[i])-1):
+                if grid[i][j] == 1:
+                    if count_adj_sweetrolls(grid, i, j) < 4:
+                        sweetrolls_to_remove.append((i,j))
+
+        if len(sweetrolls_to_remove) > 0:
+            grid = remove_sweetrolls(grid, sweetrolls_to_remove)
+            res += len(sweetrolls_to_remove)
 
     print(res)
 
